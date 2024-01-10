@@ -70,26 +70,3 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-
-/Library/
-BrainKillerMobile/Library/
-BrainKillerMobile/Logs/
-BrainKillerMobile/Temp/
-BrainKillerMobile/Library/ArtifactDB
-BrainKillerMobile/Library/Bee/backend_profiler0.traceevents
-BrainKillerMobile/Library/Bee/fullprofile.json
-BrainKillerMobile/Library/Bee/tundra.digestcache
-BrainKillerMobile/Library/Bee/tundra.log.json
-BrainKillerMobile/Library/Bee/TundraBuildState.state
-BrainKillerMobile/Library/Bee/TundraBuildState.state.map
-BrainKillerMobile/Library/com.unity.ide.rider/PersistedState.asset
-BrainKillerMobile/Library/InspectorExpandedItems.asset
-BrainKillerMobile/Library/SceneVisibilityState.asset
-BrainKillerMobile/Library/Search/transactions.db
-BrainKillerMobile/Library/ShaderCache/EditorEncounteredVariants
-BrainKillerMobile/Library/SourceAssetDB
-BrainKillerMobile/Library/StateCache/MainStageHierarchy/4d/4d2a36d9faf65734f0bbefb3ee623532.json
-BrainKillerMobile/Library/StateCache/SceneView/8c/8cd7c613bf844de3b80696e27a479d5e.json
-BrainKillerMobile/Logs/AssetImportWorker0-prev.log
-BrainKillerMobile/Logs/AssetImportWorker1-prev.log
-BrainKillerMobile/Logs/shadercompiler-UnityShaderCompiler.exe0.log
