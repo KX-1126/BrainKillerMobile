@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: b696eec9e2dd4264aa142a78f2113766
+  - enabled: 1
+    path: Assets/Scenes/FlipPuzzle.unity
+    guid: 66e867ef65c8dc54d8c3bd8dc4447856
   m_configObjects: {}
