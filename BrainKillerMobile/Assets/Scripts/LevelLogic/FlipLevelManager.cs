@@ -20,12 +20,14 @@ public class FlipLevelManager : LevelManager
         levelDescription = "Flip the tiles to match the pattern"
     };
 
+    private LevelSelectorManager levelSelectorManager;
+
     public int userRecord = 5;
-    
-    // public LevelSelectorManager levelSelectorManager = GameObject.Find("LevelSelectorPanel").GetComponent<LevelSelectorManager>();
 
     private void Start()
     {
+        levelSelectorManager = transform.Find("LevelSelectorPanel").GetComponent<LevelSelectorManager>();
+        
         InitMode("Flip");
         InitLevel(userRecord);
     }
@@ -40,6 +42,6 @@ public class FlipLevelManager : LevelManager
     {
         // init level selector
         int numOfLevels = TestModeConfig.numOfLevels;
-        // levelSelectorManager.InitLevelSelector(userRecord,numOfLevels);
+        levelSelectorManager.InitLevelSelector(userRecord,numOfLevels);
     }
 }
