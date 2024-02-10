@@ -15,4 +15,12 @@
         public string levelName;
         public string levelDescription;
     }
+
+    public struct flipLevelConfig
+    {
+        public LevelConfig normalConfig;
+        public string fullImgFrontName;
+        public string fullImgBackName;
+        public int numOfItem;
+    }
 }

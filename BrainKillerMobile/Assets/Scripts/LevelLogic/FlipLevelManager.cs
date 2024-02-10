@@ -12,15 +12,27 @@ public class FlipLevelManager : LevelManager
         modeDescription = "Flip the tiles to match the pattern",
         numOfLevels = 50
     };
-    public LevelConfig testLevel = new LevelConfig()
+    
+    public flipLevelConfig testLevel = new flipLevelConfig()
     {
-        modeName = "Flip",
-        levelId = 1,
-        levelName = "Flip 1",
-        levelDescription = "Flip the tiles to match the pattern"
+        normalConfig = new LevelConfig()
+        {
+            modeName = "Flip",
+            levelId = 1,
+            levelName = "Flip 1",
+            levelDescription = "Flip the tiles to match the pattern",
+        },
+        fullImgFrontName = "front1",
+        fullImgBackName = "front2",
+        numOfItem = 16,
     };
 
     private LevelSelectorManager levelSelectorManager;
+
+    public flipLevelConfig getCurrentLevel()
+    {
+        return testLevel;
+    }
 
     public int userRecord = 5;
 

@@ -44,8 +44,8 @@ public class LevelSelectorManager : MonoBehaviour
     
     private void Start()
     {
-        print(transform.Find("LevelScrollView").transform.localPosition);
-        print(transform.Find("LevelScrollView").transform.position);
+        // print(transform.Find("LevelScrollView").transform.localPosition);
+        // print(transform.Find("LevelScrollView").transform.position);
     }
 
     [ContextMenu("show")]
