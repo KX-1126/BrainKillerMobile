@@ -14,4 +14,14 @@ public class LevelManager : MonoBehaviour
     {
         throw  new System.NotImplementedException();
     }
+
+    public virtual void returnToLobby()
+    {
+        
+    }
+
+    public virtual void nextLevel()
+    {
+        
+    }
 }

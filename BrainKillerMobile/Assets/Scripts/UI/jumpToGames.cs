@@ -3,31 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum gameType{
-    flip = 0,
-    rotate = 1,
-    memorize = 2,
-    shoot = 3,
-}
+
 
 public class jumpToGames : MonoBehaviour
 {
     public void jumpToGame(int typenum)
     {
-        gameType type = (gameType)typenum;
-        switch (type)
+        switch (typenum)
         {
-            case gameType.flip:
+            case 0:
                 SceneManager.LoadScene("FlipPuzzle");
                 break;
-            case gameType.rotate:
-                SceneManager.LoadScene("CirclePuzzle");
+            case 1:
+                SceneManager.LoadScene("CompareNext");
                 break;
-            case gameType.memorize:
-                SceneManager.LoadScene("MemPuzzle");
+            case 2:
+                SceneManager.LoadScene("MatchCards");
                 break;
-            case gameType.shoot:
-                SceneManager.LoadScene("ShootPuzzle");
+            case 3:
+                SceneManager.LoadScene("ImageDetective");
                 break;
         }
     }
