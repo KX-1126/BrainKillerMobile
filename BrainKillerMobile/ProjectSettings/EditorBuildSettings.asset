@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FlipPuzzle.unity
     guid: 66e867ef65c8dc54d8c3bd8dc4447856
+  - enabled: 1
+    path: Assets/Scenes/MatchCards.unity
+    guid: 3356e9439c3fcd8478c22740bfab6c26
   m_configObjects: {}

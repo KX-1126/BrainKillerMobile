@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22076362, g: 0.32038093, b: 0.38679248, a: 1}
+  m_Color: {r: 0.108757555, g: 0.49056602, b: 0.17296346, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -413,7 +413,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7230649808011858932, guid: e900cbf59ba17ab4392a5f4aad8658bc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0017924269
+      value: 0.12044477
       objectReference: {fileID: 0}
     - target: {fileID: 7230649808052941473, guid: e900cbf59ba17ab4392a5f4aad8658bc, type: 3}
       propertyPath: m_AnchorMax.x
@@ -504,7 +504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.39315593, g: 0.63103324, b: 0.8773585, a: 1}
+  m_Color: {r: 0.4236383, g: 0.754717, b: 0.5099077, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -719,6 +719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: {fileID: 1042856015}
+  levelController: {fileID: 1334927007}
   button1: {fileID: 739292690}
   button2: {fileID: 1263360720}
 --- !u!114 &388049329
@@ -1080,7 +1081,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 681223970}
-  - component: {fileID: 681223971}
   m_Layer: 5
   m_Name: ImageLoader
   m_TagString: Untagged
@@ -1108,20 +1108,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &681223971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 681223969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcceb08c1beb5a542a0fcb140dd866b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageFront: {fileID: 0}
-  imageBack: {fileID: 0}
 --- !u!1 &707834632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1180,7 +1166,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Flip Game
+  m_text: Match Cards
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1819,12 +1805,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1334927007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0874a27ae02083b478e872d2064bc756, type: 3}
+  m_Script: {fileID: 11500000, guid: 6efb915fb5bc8b644bc0939d388f952c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ImageItemPrefab: {fileID: 5676569844733358528, guid: 44ba14ad5cd7d544399207957ae8396a, type: 3}
-  imagesParent: {fileID: 127794217}
-  endCanvas: {fileID: 388049326}
+  cardPrefab: {fileID: 0}
+  imagesParent: {fileID: 0}
+  endCanvas: {fileID: 0}
+  TimeUsed: 0
 --- !u!1 &1478367889
 GameObject:
   m_ObjectHideFlags: 0
@@ -2282,7 +2269,6 @@ GameObject:
   - component: {fileID: 2078936745}
   - component: {fileID: 2078936744}
   - component: {fileID: 2078936743}
-  - component: {fileID: 2078936742}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2290,19 +2276,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2078936742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2078936741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88ba6a42fe2ff0c4cb9bf6b6b006e4d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  userRecord: 5
 --- !u!114 &2078936743
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class FlipLevelController : MonoBehaviour
+public class FlipLevelController : LevelControllerBase
 {
     public GameObject ImageItemPrefab;
     public GameObject imagesParent;
@@ -50,7 +50,7 @@ public class FlipLevelController : MonoBehaviour
     }
     
 
-    public void InitLevel(){
+    public override void InitLevel(){
         // parse level config
         flipLevelConfig curLevelConfig = testLevel;
         
@@ -151,21 +151,6 @@ public class FlipLevelController : MonoBehaviour
         endCanvas.SetActive(true);
         EndCanvasController endCanvasController = endCanvas.GetComponent<EndCanvasController>();
         endCanvasController.setResult(result);
-    }
-    
-    public void NextLevel()
-    {
-        print("Next Level");
-    }
-    
-    public void Retry()
-    {
-        print("Retry");
-    }
-    
-    public void BackToMenu()
-    {
-        print("Back to Menu");
     }
 
 }

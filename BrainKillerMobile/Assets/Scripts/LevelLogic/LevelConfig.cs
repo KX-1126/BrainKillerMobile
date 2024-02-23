@@ -23,4 +23,13 @@
         public string fullImgBackName;
         public int numOfItem;
     }
+    
+    public struct matchCardsLevelConfig
+    {
+        public LevelConfig normalConfig;
+        public string[] imageNames;
+        public int showTime;
+        public int numOfRow;
+        public int numOfCol;
+    }
 }
