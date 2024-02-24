@@ -7,14 +7,14 @@ using UnityEngine.UI;
 public class EndCanvasController : MonoBehaviour
 {
     public TextMeshProUGUI title;
-    public GameObject levelController;
+    public GameObject levelControllerGameObject;
     public Button button1;
     public Button button2;
     
     public void setResult(bool result)
     {
         //get level base
-        LevelControllerBase levelController = this.levelController.GetComponent<LevelControllerBase>();
+        LevelControllerBase levelController = this.levelControllerGameObject.GetComponent<LevelControllerBase>();
         
         if (result)
         {

@@ -14,6 +14,7 @@ public class FlipLevelController : LevelControllerBase
 
     private int MAX_TRY_COUNT;
     private int triedCount;
+    private bool startJudge = false;
     
     // static instance
     public static FlipLevelController Instance;
@@ -66,19 +67,23 @@ public class FlipLevelController : LevelControllerBase
         // create a grid of images
         for (int i = 0; i < curLevelConfig.numOfItem; i++)
         {
-            GameObject imageItem = Instantiate(ImageItemPrefab, transform);
+            GameObject imageItem = Instantiate(ImageItemPrefab, imagesParent.transform);
             imageItem.name = "ImageItem-" + i;
             
-            // get cell size
-            GridLayoutGroup layoutGroup = transform.Find("Images").GetComponent<GridLayoutGroup>();
-            Vector2 cellSize = layoutGroup.cellSize;
-            imageItem.GetComponent<BoxCollider2D>().size = new Vector2(cellSize.x, cellSize.y);
-            imageItem.transform.SetParent(imagesParent.transform);
+            imageItem.GetComponent<ImageGridController>().FlipCompleted += handleFlipCompleted;
             imageItem.transform.GetComponent<ImageGridController>().setSprites(imageTuples.Item1[i], imageTuples.Item2[i]);
         }
         
         // mix images
         Invoke(nameof(StartLevel), 1.0f);
+    }
+    
+    private void handleFlipCompleted(object sender, EventArgs e){
+        if (startJudge)
+        {
+            addTryCount();
+            JudgeLevel();
+        }
     }
 
     public void StartLevel(){
@@ -90,6 +95,11 @@ public class FlipLevelController : LevelControllerBase
             imageItem.GetComponent<ImageGridController>().StartFlip(0.5f, Random.Range(1, 4), false);
             print("flip " + imageItem.name + " " + randFlipCount + " times");
         }
+        Invoke(nameof(startJudge), 5 * 0.5f);   
+    }
+    
+    private void startJudgeLevel(){
+        startJudge = true;
     }
     
     [ContextMenu("Judge Level")]

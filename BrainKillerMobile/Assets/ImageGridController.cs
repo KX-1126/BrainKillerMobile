@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,19 +11,19 @@ public class ImageGridController : MonoBehaviour
     public Sprite imageBack;
     public bool isRotating = false;
     public bool isFlipped = false;
+    
+    public event EventHandler FlipCompleted;
 
     [ContextMenu("StartFlip")]
-    public void StartFlip(float flipTime = 0.8f, int flipCount = 1, bool judge = true)
+    public void StartFlip(float flipTime = 0.8f, int flipCount = 1, bool notify = true)
     {
         if (isRotating)
             return;
         StopAllCoroutines();
-        StartCoroutine(Flip(flipTime, flipCount, judge));
+        StartCoroutine(Flip(flipTime, flipCount, notify));
     }
-    
-    
 
-    IEnumerator Flip(float flipTime, int flipCount, bool judge)
+    IEnumerator Flip(float flipTime, int flipCount, bool notify)
     {
         // print(gameObject.name + " flipping");
         flipCount -= 1;
@@ -56,13 +58,12 @@ public class ImageGridController : MonoBehaviour
 
         if (flipCount > 0)
         {
-            StartCoroutine(Flip(flipTime, flipCount, judge));
+            StartCoroutine(Flip(flipTime, flipCount, notify));
         }
 
-        if (judge)
+        if (notify)
         {
-            FlipLevelController.Instance.addTryCount();
-            FlipLevelController.Instance.JudgeLevel();
+            FlipCompleted?.Invoke(this, EventArgs.Empty);
         }
         
     }
@@ -86,7 +87,22 @@ public class ImageGridController : MonoBehaviour
         
         // print("Sprite switched");
     }
-    
+
+    private void Start()
+    {
+        StartCoroutine(setColliderSize());
+    }
+
+    IEnumerator setColliderSize() 
+    {
+        yield return null; // wait for a frame
+        
+        // Debug.Log(GetComponent<RectTransform>().rect.size);
+        BoxCollider2D _collider2D = GetComponent<BoxCollider2D>();
+        RectTransform _rectTransform = GetComponent<RectTransform>();
+        _collider2D.size = new Vector2(_rectTransform.rect.width, _rectTransform.rect.height);
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonUp(0))
@@ -98,7 +114,7 @@ public class ImageGridController : MonoBehaviour
             // print("collider pos: " + _collider2D.bounds);
             if (_collider2D.OverlapPoint(clickPosition))
             {
-                print(gameObject.name + " Clicked");
+                // print(gameObject.name + " Clicked");
                 GetComponent<ImageGridController>().StartFlip();
             }
         }

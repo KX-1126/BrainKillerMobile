@@ -31,5 +31,20 @@
         public int showTime;
         public int numOfRow;
         public int numOfCol;
+
+        public bool selfCheck()
+        {
+            if (numOfCol <= 0 || numOfRow <= 0 || showTime <= 0 || imageNames.Length <= 0)
+            {
+                return false;
+            }
+            
+            if (numOfCol * numOfRow / 2 != imageNames.Length)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
