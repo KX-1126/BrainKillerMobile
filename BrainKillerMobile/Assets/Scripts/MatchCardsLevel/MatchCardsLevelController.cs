@@ -5,6 +5,7 @@ using UnityEngine;
 using LevelLogic;
 using TMPro;
 using UnityEngine.UI;
+using Utilities;
 
 public enum MatchCardsGameState
 {
@@ -25,7 +26,7 @@ public class MatchCardsLevelController : LevelControllerBase
 
     public int TimeUsed = 0; // in seconds
     private float gameStartTime;
-    private int MAX_TIME = 90;
+    public int MAX_TIME = 90;
     
     private List<ImageGridController> matchedCards = new List<ImageGridController>();
     private List<ImageGridController> flipedCards = new List<ImageGridController>();
@@ -50,10 +51,10 @@ public class MatchCardsLevelController : LevelControllerBase
             levelName = "Match Cards 1",
             levelDescription = "match the cards to win",
         },
-        imageNames = new string[] {"0", "1", "2"},
+        imageNames = new string[] {"0", "1", "2","3","4","5"},
         showTime = 5,
-        numOfRow = 3,
-        numOfCol = 2,
+        numOfRow = 4,
+        numOfCol = 3,
     };
 
     private void Awake()
@@ -122,6 +123,19 @@ public class MatchCardsLevelController : LevelControllerBase
             // random select image
             controller.setSprites(backImage, images[i]);
         }
+        
+        // adjust cell size
+        GridLayoutGroup layoutGroup = imagesParent.GetComponent<GridLayoutGroup>();
+        Vector2 size = GridLayoutSizeCalculator.CalculateGridMinSquareSize(
+            imagesParent.GetComponent<RectTransform>().rect.size, 
+            curLevelConfig.numOfRow, 
+            curLevelConfig.numOfCol, 
+            30, 
+            150);
+        layoutGroup.cellSize = size;
+        
+        print("adjust cell size to " + layoutGroup.cellSize);
+        
         gameStartTime = Time.time;
         
         gameState = MatchCardsGameState.Start;

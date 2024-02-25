@@ -8,20 +8,22 @@ public class FlipImageLoader : MonoBehaviour
     public Sprite imageFront;
     public Sprite imageBack;
 
-    private void Awake()
+    public bool  loadImage(string frontImageName, string backImageName)
     {
-        loadImage();
-    }
-
-    public void loadImage()
-    {
-        imageFront = Resources.Load<Sprite>("GamesAssets/front1");
+        imageFront = Resources.Load<Sprite>("GamesAssets/localRawImage/" + frontImageName);
         if (imageFront == null)
+        {
             Debug.Log("Image front not found");
-        imageBack = Resources.Load<Sprite>("GamesAssets/front2");
+            return false;
+        }
+        imageBack = Resources.Load<Sprite>("GamesAssets/localRawImage/" + backImageName);
         if (imageBack == null)
+        {
             Debug.Log("Image back not found");
+            return false;
+        }
         print("load image success");
+        return true;
     }
 
     public (List<Sprite>, List<Sprite>) getSplitedSprites(int numOfSprites)

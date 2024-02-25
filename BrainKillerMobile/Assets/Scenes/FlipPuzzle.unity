@@ -452,7 +452,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 250, y: 250}
   m_Spacing: {x: 50, y: 50}
-  m_Constraint: 0
+  m_Constraint: 1
   m_ConstraintCount: 2
 --- !u!1 &608798025
 GameObject:
@@ -623,6 +623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: {fileID: 788861607}
+  levelControllerGameObject: {fileID: 682651444}
   button1: {fileID: 795145946}
   button2: {fileID: 1654451324}
 --- !u!1 &666977632

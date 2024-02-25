@@ -5,6 +5,7 @@ using LevelLogic;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using Utilities;
 
 public class FlipLevelController : LevelControllerBase
 {
@@ -35,9 +36,9 @@ public class FlipLevelController : LevelControllerBase
             levelName = "Flip 1",
             levelDescription = "Flip the tiles to match the pattern",
         },
-        fullImgFrontName = "front1",
-        fullImgBackName = "front2",
-        numOfItem = 16,
+        fullImgFrontName = "1",
+        fullImgBackName = "2",
+        numOfItem = 9,
     };
 
     private void Awake()
@@ -60,6 +61,12 @@ public class FlipLevelController : LevelControllerBase
         
         // load images
         FlipImageLoader loader = transform.Find("ImageLoader").GetComponent<FlipImageLoader>();
+        bool success = loader.loadImage(curLevelConfig.fullImgFrontName, curLevelConfig.fullImgBackName); // save to loader
+        if (!success)
+        {
+            Debug.LogError("fail to load images");
+            return;
+        }
         
         // split images
         (List<Sprite>,List<Sprite>) imageTuples = loader.getSplitedSprites(curLevelConfig.numOfItem);
@@ -73,6 +80,18 @@ public class FlipLevelController : LevelControllerBase
             imageItem.GetComponent<ImageGridController>().FlipCompleted += handleFlipCompleted;
             imageItem.transform.GetComponent<ImageGridController>().setSprites(imageTuples.Item1[i], imageTuples.Item2[i]);
         }
+        
+        // adjust cell size
+        GridLayoutGroup gridLayoutGroup = imagesParent.GetComponent<GridLayoutGroup>();
+        int rowCount = (int)Mathf.Sqrt(curLevelConfig.numOfItem);
+        gridLayoutGroup.constraintCount = rowCount;
+        gridLayoutGroup.cellSize = GridLayoutSizeCalculator.CalculateGridMinSquareSize(
+            imagesParent.GetComponent<RectTransform>().rect.size, 
+            rowCount, 
+            rowCount, 
+            20, 
+            0);
+        print("adjust size to " + gridLayoutGroup.cellSize);
         
         // mix images
         Invoke(nameof(StartLevel), 1.0f);
@@ -95,7 +114,7 @@ public class FlipLevelController : LevelControllerBase
             imageItem.GetComponent<ImageGridController>().StartFlip(0.5f, Random.Range(1, 4), false);
             print("flip " + imageItem.name + " " + randFlipCount + " times");
         }
-        Invoke(nameof(startJudge), 5 * 0.5f);   
+        Invoke(nameof(startJudgeLevel), 5 * 0.5f);   
     }
     
     private void startJudgeLevel(){
