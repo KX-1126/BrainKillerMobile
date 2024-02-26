@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class ImageDetectiveImageLoader : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public List<Sprite> LoadImages(string[] imageNames)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        List<Sprite> images = new List<Sprite>();
+        foreach (string name in imageNames)
+        {
+            Sprite s = Resources.Load<Sprite>("GamesAssets/SimilarImages/" + name);
+            if (s == null)
+            {
+                Debug.LogError("ImageDetectiveImageLoader: " + name + " not found");
+                continue;
+            }
+            images.Add(s);
+        }
+        return images;
     }
 }
