@@ -8,28 +8,28 @@ public class EndCanvasController : MonoBehaviour
 {
     public TextMeshProUGUI title;
     public GameObject levelControllerGameObject;
-    public Button button1;
-    public Button button2;
+    public Button retryButton;
+    public Button nextButton;
+    public Button quitButton;
     
-    public void setResult(bool result)
+    public void setResult(bool result)  
     {
         //get level base
         LevelControllerBase levelController = this.levelControllerGameObject.GetComponent<LevelControllerBase>();
         
+        //set button action
+        retryButton.onClick.AddListener(levelController.retry);
+        quitButton.onClick.AddListener(levelController.returnToLobby);
+        nextButton.onClick.AddListener(levelController.nextLevel);
+        
         if (result)
         {
             title.text = "You Win!";
-            button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Next Level";
-            button1.onClick.AddListener(levelController.nextLevel);
-            button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Leave Game";
         }
         else
         {
             title.text = "You Fail!";
-            button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Retry";
-            button1.onClick.AddListener(levelController.retry);
-            button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Leave Game";
+            nextButton.gameObject.SetActive(false);
         }
-        button2.onClick.AddListener(levelController.returnToLobby);
     }
 }

@@ -5,6 +5,7 @@ using LevelLogic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Utilities;
 
@@ -163,5 +164,6 @@ public class ImageDetectiveLevelController : LevelControllerBase
         endCanvasController.setResult(result);
         gameState = ImageDetectiveLevelState.End;
     }
+    
 
 }

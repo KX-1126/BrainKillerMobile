@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelControllerBase : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class LevelControllerBase : MonoBehaviour
     
     public virtual void returnToLobby()
     {
-        throw new System.NotImplementedException();
+        SceneManager.LoadScene("Lobby");
     }
 
     public virtual void retry()
