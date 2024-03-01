@@ -101,7 +101,7 @@ public class FlipLevelController : LevelControllerBase
         if (startJudge)
         {
             addTryCount();
-            JudgeLevel();
+            JudgeLevelResult();
         }
     }
 
@@ -122,7 +122,7 @@ public class FlipLevelController : LevelControllerBase
     }
     
     [ContextMenu("Judge Level")]
-    public bool JudgeLevel(){
+    public bool JudgeLevelResult(){
         // judge the level
         List<bool> states = new List<bool>();
         for (int i = 0; i < imagesParent.transform.childCount; i++)

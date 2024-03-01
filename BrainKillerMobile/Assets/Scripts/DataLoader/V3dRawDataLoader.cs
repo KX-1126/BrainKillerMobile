@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using System.IO;
 
 namespace DataLoader
 {
-    public class V3dRawDataLoader
+    public class V3dRawDataLoader: MonoBehaviour
     {
         public static Dataset3D loadV3dRawImage(byte[] imageData) //only support uint8 data type
         {
+            Debug.Log("start loading v3draw file");
             int bytesToSkip = 43;
             string formatKey = "raw_image_stack_by_hpeng";
             
@@ -39,33 +41,44 @@ namespace DataLoader
             float[] rawImageData = new float[totalCount];
             float maxValue = float.MinValue;
             float minValue = float.MaxValue;
+
+            print("total count" + totalCount);
+            print("total bytes" + imageData.Length);
             
             for (int i = bytesToSkip; i < totalCount+bytesToSkip; i++)
             {
-                rawImageData[i] = Convert.ToSingle(imageData[bytesToSkip]);
-                if (rawImageData[i] > maxValue)
+                int rawImageDataIndex = i - bytesToSkip;
+                rawImageData[rawImageDataIndex] = (float)(imageData[i]);
+                if (rawImageData[rawImageDataIndex] > maxValue)
                 {
-                    maxValue = rawImageData[i];
+                    maxValue = rawImageData[rawImageDataIndex];
                 }
 
-                if (rawImageData[i] < minValue)
+                if (rawImageData[rawImageDataIndex] < minValue)
                 {
-                    minValue = rawImageData[i];
+                    minValue = rawImageData[rawImageDataIndex];
                 }
             }
+            
+            print("max value " + maxValue + " min value " + minValue);
 
             Dataset3D newDateset = new Dataset3D();
+            newDateset.datasetName = "testImage";
             newDateset.data = rawImageData;
             newDateset.dimX = dimX;
             newDateset.dimY = dimY;
             newDateset.dimZ = dimZ;
             newDateset.setMaxMin(maxValue, minValue);
+            
+            Debug.Log("finish loading v3draw file");
+            
             return newDateset;
         }
         
-        public static void readV3dRawFromLocalFile(string filePath)
+        public static Dataset3D readV3dRawFromLocalFile(string filePath)
         {
-            
+            byte[] byteArray = File.ReadAllBytes(filePath);
+            return loadV3dRawImage(byteArray);
         }
     }
     
