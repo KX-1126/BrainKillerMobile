@@ -42,8 +42,8 @@ namespace DataLoader
             float maxValue = float.MinValue;
             float minValue = float.MaxValue;
 
-            print("total count" + totalCount);
-            print("total bytes" + imageData.Length);
+            // print("total count" + totalCount);
+            // print("total bytes" + imageData.Length);
             
             for (int i = bytesToSkip; i < totalCount+bytesToSkip; i++)
             {

@@ -16,7 +16,7 @@ public class testVolumeGeneration : MonoBehaviour
         volumeObject.transform.parent = this.transform;
         volumeObject.transform.localPosition = Vector3.zero;
         volumeObject.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        volumeObject.transform.localScale = Vector3.one * 500;
+        volumeObject.transform.localScale = Vector3.one;
         
     }
 }

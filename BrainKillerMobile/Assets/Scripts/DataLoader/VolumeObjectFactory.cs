@@ -29,7 +29,6 @@ namespace DataLoader
                 return null;
             }
             
-            print("texture3D created" + texture3D.dimension);
             meshRenderer.material.SetTexture("_dataTex", texture3D);
             // meshRenderer.material.SetTexture("_NoiseTex", null);
             meshRenderer.material.SetInt("_StepCount", 128);
