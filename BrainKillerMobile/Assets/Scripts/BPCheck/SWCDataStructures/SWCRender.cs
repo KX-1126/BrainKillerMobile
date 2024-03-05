@@ -32,13 +32,20 @@ public class SWCRender : MonoBehaviour
         print("Rendering SWC of " + newswc.numNodes + " nodes");
         foreach (Node node in newswc.indexNodeMap.Values)
         {
+            if (node == newswc.head)
+            {
+                GameObject headNodePrefab = Resources.Load<GameObject>("Prefabs/ImportantSwcNode");
+                headNodePrefab.transform.localScale = Vector3.one * basicScale * 2;
+                GameObject newNodeGameObject = Instantiate(headNodePrefab,parent.transform);
+                newNodeGameObject.name = "Head-" + node.id;
+                newNodeGameObject.transform.localPosition = new Vector3(node.relativeX, node.relativeY, node.relativeZ);
+                continue;
+            }
+            
             GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
             nodePrefab.transform.localScale = Vector3.one * basicScale;
             GameObject nodeGameObject = Instantiate(nodePrefab,parent.transform);
-            if (node.pid == -1)
-            {
-                nodeGameObject.name = "Head-" + node.id;
-            }else if (node.children.Count == 0)
+            if (node.children.Count == 0)
             {
                 nodeGameObject.name = "End-" + node.id;
             }

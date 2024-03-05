@@ -5,6 +5,7 @@ using UnityEngine;
 public class changeActiveSwcScale : MonoBehaviour
 {
     public GameObject swcParent;
+    public Dictionary<GameObject,Vector3> scaleMap = new Dictionary<GameObject, Vector3>();
     
     public void changeScale(float scale)
     {
@@ -13,7 +14,12 @@ public class changeActiveSwcScale : MonoBehaviour
         {
             if (child.gameObject.activeSelf)
             {
-                Vector3 oriScale = child.localScale;
+                if (scaleMap.ContainsKey(child.gameObject) == false)
+                {
+                    scaleMap.Add(child.gameObject, child.localScale);
+                }
+                
+                Vector3 oriScale = scaleMap[child.gameObject];
                 child.localScale = oriScale * (1+scale);
                 print("change scale of " + child.name + " to " + child.localScale);
                 break;
