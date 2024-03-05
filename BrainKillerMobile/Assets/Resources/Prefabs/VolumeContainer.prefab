@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3707726031034915587}
   - component: {fileID: 3707726031034915584}
   - component: {fileID: 3707726031034915585}
-  - component: {fileID: 3707726031034915586}
   m_Layer: 5
   m_Name: VolumeContainer
   m_TagString: Untagged
@@ -103,16 +102,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3707726031034915586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3707726031034915591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcc70a10abb22db41aacb5cd84c75372, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotateSpeed: 5

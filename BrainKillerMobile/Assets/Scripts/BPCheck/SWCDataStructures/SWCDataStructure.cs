@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class Node
 
 public class SWC
 {
+    public string swcName = "normal_swc";
     public Node head = null;
     public Dictionary<int,Node> indexNodeMap = new Dictionary<int, Node>();
     public int numNodes = 0;
@@ -93,9 +95,9 @@ public class SWC
         foreach (Node node in nodes)
         {
             // calculate relative position
-            node.relativeX = node.x - center.x;
-            node.relativeY = node.y - center.y;
-            node.relativeZ = node.z - center.z;
+            node.relativeX = node.x - head.x;
+            node.relativeY = node.y - head.y;
+            node.relativeZ = node.z - head.z;
             
             if (node.children.Count > 1)
             {
@@ -114,6 +116,58 @@ public class SWC
         numNodes = indexNodeMap.Count;
         Debug.Log($"Successfully build tree of {numNodes} nodes");
         return this;
+    }
+
+    public SWC cropFromBp(string name, Node bp, int dimX, int dimY, int dimZ)
+    {
+        if (branchNodes.Contains(bp) == false)
+        {
+            Debug.LogError("bp is not a branch node");
+            return null;
+        }
+        
+        SWC croppedSWC = new SWC();
+        croppedSWC.swcName = name;
+        croppedSWC.head = bp;
+
+        // needs deep copy
+        foreach (var pair in indexNodeMap)
+        {
+            Node n = pair.Value;
+            if ( Math.Abs(n.relativeX-bp.relativeX) <= dimX/2.0f && 
+                 Math.Abs(n.relativeY-bp.relativeY) <= dimY/2.0f && 
+                 Math.Abs(n.relativeZ-bp.relativeZ) <= dimZ/2.0f )
+            {
+                croppedSWC.indexNodeMap[n.id] = n;
+                croppedSWC.numNodes += 1;
+            }
+        }
+        
+        //remove unvalid parent child relationship
+        // foreach (var pair in croppedSWC.indexNodeMap)
+        // {
+        //     Node n = pair.Value;
+        //     if (n.pid == -1)
+        //     {
+        //         continue;
+        //     }
+        //     
+        //     int pid = n.pid;
+        //     if (croppedSWC.indexNodeMap.ContainsKey(pid) == false)
+        //     {
+        //         n.pid = -2; //mark as crop end
+        //     }
+        //
+        //     foreach (var child in n.children)
+        //     {
+        //         if (croppedSWC.indexNodeMap.ContainsKey(child.id) == false)
+        //         {
+        //             n.children.Remove(child);
+        //         }
+        //     }
+        // }
+
+        return croppedSWC;
     }
 }
 
