@@ -56,4 +56,11 @@
         public int numOfCol;
         public int timeLimit;
     }
+
+    public struct BPCheckLevelConfig
+    {
+        public LevelConfig normalConfig;
+        public string imageName;
+        public string swcName;
+    }
 }

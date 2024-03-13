@@ -2,32 +2,37 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
 public class SWCRender : MonoBehaviour
 {
     public readonly SWC swc = new SWC();
     public int basicScale = 5;
+    public float moveInDistance = 2500;
     
     private void Start()
     {
-        string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
-        swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
-        Render(swc);
+        // string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
+        // swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
+        // Render(swc);
     }
 
     public void Render(SWC newswc)
     {
+        //reset rotation
+        transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        
         // disable old swc parent object
         foreach (Transform child in transform)
         {
-            child.gameObject.SetActive(false);
+            StartCoroutine(moveObject.MoveOverTime(child.gameObject, new Vector3(-moveInDistance, 0, 0), 2.0f, true));
         }
         
         // create empty parent
         GameObject parent = new GameObject(newswc.swcName);
         parent.transform.SetParent(this.transform);
         parent.transform.localScale = Vector3.one * 6;
-        parent.transform.localPosition = Vector3.zero;
+        parent.transform.localPosition = new Vector3(moveInDistance, 0, 0);
         
         print("Rendering SWC of " + newswc.numNodes + " nodes");
         foreach (Node node in newswc.indexNodeMap.Values)
@@ -83,5 +88,8 @@ public class SWCRender : MonoBehaviour
         }
         
         print("Rendering SWC finished");
+        
+        StartCoroutine(moveObject.MoveOverTime(parent, Vector3.zero, 2.0f, false)); 
     }
+    
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DataLoader;
+using TMPro;
 using UnityEngine;
 
 public class CropWithSwcBp : MonoBehaviour
@@ -12,9 +13,20 @@ public class CropWithSwcBp : MonoBehaviour
     
     private SWC swc = null;
     private Dataset3D dataset = null;
+    public TextMeshProUGUI textIndicator;
     
     private List<Tuple<Dataset3D, SWC>> croppedData = new List<Tuple<Dataset3D, SWC>>();
     private int croppedDataIndex = 0;
+
+    public int getCroppedDataCount()
+    {
+        return croppedData.Count;
+    }
+
+    public bool reachCroppedDataEnd()
+    {
+        return croppedDataIndex >= croppedData.Count;
+    }
 
     private bool getData()
     {
@@ -28,8 +40,8 @@ public class CropWithSwcBp : MonoBehaviour
             return false;
         }
         
-        print("dateset name: " + dataset.datasetName);
-        print("dataset size: " + dataset.dimX + " " + dataset.dimY + " " + dataset.dimZ);
+        // print("dateset name: " + dataset.datasetName);
+        // print("dataset size: " + dataset.dimX + " " + dataset.dimY + " " + dataset.dimZ);
 
         return true;
     }
@@ -42,8 +54,9 @@ public class CropWithSwcBp : MonoBehaviour
     }
     
     
-    private void crop(int dim)
+    public void crop(int dim)
     {
+        
         if (getData() != true)
         {
             print("Data not ready");
@@ -86,10 +99,12 @@ public class CropWithSwcBp : MonoBehaviour
         }
         
         print($"total {count} cropped data: ");
+
+        textIndicator.text = $"{1}/{croppedData.Count}";
     }
     
     [ContextMenu("Render cropped data")]
-    private void renderCroppedData()
+    public void renderNextCroppedData()
     {
         if (croppedData.Count == 0)
         {
@@ -99,8 +114,11 @@ public class CropWithSwcBp : MonoBehaviour
         
         if (croppedDataIndex >= croppedData.Count)
         {
-            croppedDataIndex = 0;
+            print("Reach end of cropped data");
+            return;
         }
+        
+        textIndicator.text = $"{croppedDataIndex + 1}/{croppedData.Count}";
         
         print("cropped data index: " + croppedDataIndex);
         var cropped = croppedData[croppedDataIndex];
@@ -109,11 +127,9 @@ public class CropWithSwcBp : MonoBehaviour
         Dataset3D dataset = cropped.Item1;
         SWC swc = cropped.Item2;
         
-        print(dataset.datasetName + " has dim: " + dataset.dimX + " " + dataset.dimY + " " + dataset.dimZ);
-        print(dataset.datasetName + " has data length: " + dataset.data.Length);
-        
-        print(swc.swcName + " has numNodes: " + swc.numNodes);
-        
+        // print(dataset.datasetName + " has dim: " + dataset.dimX + " " + dataset.dimY + " " + dataset.dimZ);
+        // print(dataset.datasetName + " has data length: " + dataset.data.Length);
+        // print(swc.swcName + " has numNodes: " + swc.numNodes);
         
         VolumeGenerator vg = imageParent.GetComponent<VolumeGenerator>();
         vg.GenerateVolumeObject(dataset);

@@ -126,7 +126,7 @@ namespace DataLoader
             newDataset.minDataValue = minVal;
             newDataset.maxDataValue = maxVal;
             // log out
-            Debug.Log("crop min value: " + minVal + " max value: " + maxVal);
+            // Debug.Log("crop min value: " + minVal + " max value: " + maxVal);
 
             return newDataset;
         }

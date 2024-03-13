@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 
 namespace Utilities
 {
@@ -17,6 +18,29 @@ namespace Utilities
             Vector2 size = CalculateGridLayoutSize(parentSize, rowCount, columnCount, spacing, padding);
             int length = (int) Mathf.Min(size.x, size.y);
             return new Vector2(length, length);
+        }
+    }
+    
+    public class moveObject
+    {
+        public static IEnumerator MoveOverTime(GameObject target, Vector3 targetPosition, float duration, bool disableAtEnd)
+        {
+            float time = 0;
+            Vector3 initialPosition = target.transform.localPosition;
+
+            while (time < duration)
+            {
+                target.transform.localPosition = Vector3.Lerp(initialPosition, targetPosition, time / duration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+
+            target.transform.localPosition = targetPosition;
+        
+            if (disableAtEnd)
+            {
+                target.SetActive(false);
+            }
         }
     }
 }

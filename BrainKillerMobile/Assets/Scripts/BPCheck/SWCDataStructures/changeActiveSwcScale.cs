@@ -21,7 +21,7 @@ public class changeActiveSwcScale : MonoBehaviour
                 
                 Vector3 oriScale = scaleMap[child.gameObject];
                 child.localScale = oriScale * (1+scale);
-                print("change scale of " + child.name + " to " + child.localScale);
+                // print("change scale of " + child.name + " to " + child.localScale);
                 break;
             }
         }

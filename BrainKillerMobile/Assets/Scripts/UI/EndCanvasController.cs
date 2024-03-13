@@ -18,9 +18,21 @@ public class EndCanvasController : MonoBehaviour
         LevelControllerBase levelController = this.levelControllerGameObject.GetComponent<LevelControllerBase>();
         
         //set button action
-        retryButton.onClick.AddListener(levelController.retry);
-        quitButton.onClick.AddListener(levelController.returnToLobby);
-        nextButton.onClick.AddListener(levelController.nextLevel);
+        //set button action
+        if (retryButton != null)
+        {
+            retryButton.onClick.AddListener(levelController.retry);
+        }
+
+        if (quitButton != null)
+        {
+            quitButton.onClick.AddListener(levelController.returnToLobby);
+        }
+
+        if (nextButton != null)
+        {
+            nextButton.onClick.AddListener(levelController.nextLevel);
+        }
         
         if (result)
         {
