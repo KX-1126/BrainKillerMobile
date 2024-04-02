@@ -7,7 +7,7 @@
         public int numOfLevels;
     }
     
-    
+    [System.Serializable]
     public struct LevelConfig
     {
         public string modeName;
@@ -15,15 +15,17 @@
         public string levelName;
         public string levelDescription;
     }
-
+    
+    [System.Serializable]
     public struct flipLevelConfig
     {
         public LevelConfig normalConfig;
-        public string fullImgFrontName;
-        public string fullImgBackName;
+        public string frontImageName;
+        public string backImageName;
         public int numOfItem;
     }
     
+    [System.Serializable]
     public struct matchCardsLevelConfig
     {
         public LevelConfig normalConfig;
@@ -48,6 +50,7 @@
         }
     }
 
+    [System.Serializable]
     public struct imageDetectiveLevelConfig
     {
         public LevelConfig normalConfig;
@@ -57,6 +60,7 @@
         public int timeLimit;
     }
 
+    [System.Serializable]
     public struct BPCheckLevelConfig
     {
         public LevelConfig normalConfig;

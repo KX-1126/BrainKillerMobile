@@ -624,8 +624,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: {fileID: 788861607}
   levelControllerGameObject: {fileID: 682651444}
-  button1: {fileID: 795145946}
-  button2: {fileID: 1654451324}
+  retryButton: {fileID: 0}
+  nextButton: {fileID: 0}
+  quitButton: {fileID: 0}
 --- !u!1 &666977632
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,6 +816,7 @@ MonoBehaviour:
   ImageItemPrefab: {fileID: 5676569844733358528, guid: 44ba14ad5cd7d544399207957ae8396a, type: 3}
   imagesParent: {fileID: 339777097}
   endCanvas: {fileID: 660595627}
+  title: {fileID: 1446396198}
 --- !u!1 &788861605
 GameObject:
   m_ObjectHideFlags: 0
@@ -1033,7 +1035,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 795145947}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 682651446}
+        m_TargetAssemblyTypeName: LevelControllerBase, Assembly-CSharp
+        m_MethodName: returnToLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &795145947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1388,7 +1402,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Level - 1
+  m_text: Level Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1548,7 +1562,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1654451325}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 682651446}
+        m_TargetAssemblyTypeName: LevelControllerBase, Assembly-CSharp
+        m_MethodName: nextLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1654451325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1899,7 +1925,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1956477111}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 682651446}
+        m_TargetAssemblyTypeName: LevelControllerBase, Assembly-CSharp
+        m_MethodName: returnToLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1956477111
 MonoBehaviour:
   m_ObjectHideFlags: 0

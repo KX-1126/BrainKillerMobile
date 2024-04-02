@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using LevelLogic;
+using Network;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -12,6 +15,7 @@ public class FlipLevelController : LevelControllerBase
     public GameObject ImageItemPrefab;
     public GameObject imagesParent;
     public GameObject endCanvas;
+    public TextMeshProUGUI title;
 
     private int MAX_TRY_COUNT;
     private int triedCount;
@@ -19,27 +23,8 @@ public class FlipLevelController : LevelControllerBase
     
     // static instance
     public static FlipLevelController Instance;
-    
-    public ModeConfig TestModeConfig = new ModeConfig()
-    {
-        modeName = "Flip",
-        modeDescription = "Flip the tiles to match the pattern",
-        numOfLevels = 50
-    };
-    
-    public flipLevelConfig testLevel = new flipLevelConfig()
-    {
-        normalConfig = new LevelConfig()
-        {
-            modeName = "Flip",
-            levelId = 1,
-            levelName = "Flip 1",
-            levelDescription = "Flip the tiles to match the pattern",
-        },
-        fullImgFrontName = "1",
-        fullImgBackName = "2",
-        numOfItem = 9,
-    };
+
+    private ModeConfig modeConfig;
 
     private void Awake()
     {
@@ -48,20 +33,38 @@ public class FlipLevelController : LevelControllerBase
 
     private void Start()
     {
+        InitMode();
         InitLevel();
     }
-    
 
-    public override void InitLevel(){
+    public async void InitMode()
+    {
+        string modeConfigJson = await NetworkRequest.GetRequest(NetworkURL.GET_MODE_CONFIG + "/flip/", UserInfoCache.getToken());
+        modeConfig = JsonUtility.FromJson<ModeConfig>(modeConfigJson);
+        print("Init mode:" + modeConfig.modeName);
+    }
+
+    public async override void InitLevel(){
+        string token = UserInfoCache.getToken();
+        int flipLevelProgress = UserInfoCache.getUserProfile().flipProgress;
+        string mode = "flip";
+        title.text = $"Level - {flipLevelProgress}";
+        string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{flipLevelProgress}/";
+        string flipLevelConfigString = await NetworkRequest.PostRequest(url, "", token);
+        Debug.Log("get config json:" + flipLevelConfigString);
+        
         // parse level config
-        flipLevelConfig curLevelConfig = testLevel;
+        flipLevelConfig curLevelConfig = JsonUtility.FromJson<flipLevelConfig>(flipLevelConfigString); 
+        print(curLevelConfig.normalConfig.levelDescription);
+        print(curLevelConfig.frontImageName);
+        print(curLevelConfig.backImageName);
         
         // set max try count
         MAX_TRY_COUNT = curLevelConfig.numOfItem * 2;
         
         // load images
         FlipImageLoader loader = transform.Find("ImageLoader").GetComponent<FlipImageLoader>();
-        bool success = loader.loadImage(curLevelConfig.fullImgFrontName, curLevelConfig.fullImgBackName); // save to loader
+        bool success = await loader.loadImage(curLevelConfig.frontImageName, curLevelConfig.backImageName); // save to loader
         if (!success)
         {
             Debug.LogError("fail to load images");
@@ -112,7 +115,7 @@ public class FlipLevelController : LevelControllerBase
             GameObject imageItem = imagesParent.transform.GetChild(i).gameObject;
             int randFlipCount = Random.Range(1, 4);
             imageItem.GetComponent<ImageGridController>().StartFlip(0.5f, Random.Range(1, 4), false);
-            print("flip " + imageItem.name + " " + randFlipCount + " times");
+            // print("flip " + imageItem.name + " " + randFlipCount + " times");
         }
         Invoke(nameof(startJudgeLevel), 5 * 0.5f);   
     }

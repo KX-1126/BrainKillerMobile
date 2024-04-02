@@ -2,21 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
+using System.Threading.Tasks;
+using DefaultNamespace;
+using Network;
 
 public class FlipImageLoader : MonoBehaviour
 {
     public Sprite imageFront;
     public Sprite imageBack;
 
-    public bool  loadImage(string frontImageName, string backImageName)
+    public async Task<bool> loadImage(string frontImageName, string backImageName)
     {
-        imageFront = Resources.Load<Sprite>("GamesAssets/localRawImage/" + frontImageName);
+        imageFront = await NetworkRequest.DownloadImage(frontImageName, UserInfoCache.getToken());
+        
         if (imageFront == null)
         {
             Debug.Log("Image front not found");
             return false;
         }
-        imageBack = Resources.Load<Sprite>("GamesAssets/localRawImage/" + backImageName);
+        
+        
+        imageBack = await NetworkRequest.DownloadImage(frontImageName, UserInfoCache.getToken());
         if (imageBack == null)
         {
             Debug.Log("Image back not found");
@@ -59,5 +65,6 @@ public class FlipImageLoader : MonoBehaviour
 
         return splitedSprites;
     }
+    
 
 }

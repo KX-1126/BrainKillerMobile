@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DefaultNamespace;
 using TMPro;
 using UnityEngine;
 using Network;
@@ -16,22 +17,19 @@ struct loginRequestBody
 
 public class User
 {
-    public int Id { get; set; } // Gorm.Model 的简化表示，仅包含 ID
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-
-    public long FlipProgress { get; set; }
-    public long ImageDetectiveProgress { get; set; }
-    public long MatchCardsProgress { get; set; }
-
-    public long BPCheckProgress { get; set; }
-
-    public long RewardsGameProgress { get; set; }
-    public long RewardsScienceProgress { get; set; }
-
-    // 假设 BPAnnotation 已经定义为 C# 类
-    public string BPAnnotations { get; set; }
+    public int ID;
+    public string CreatedAt;
+    public string UpdatedAt;
+    public string DeletedAt; // 如果您不需要处理这个字段，可以省略
+    public string username;
+    public string email;
+    public string password; // 注意：通常不建议在客户端处理密码
+    public int flipProgress;
+    public int imageDetectiveProgress;
+    public int MatchCardsProgress;
+    public int bpcheckProgress;
+    public int rewardsGameProgress;
+    public int rewardsScienceProgress;
 }
 
 public class SignInResponse
@@ -45,6 +43,7 @@ public class loginController : MonoBehaviour
     public TextMeshProUGUI email;
     public TextMeshProUGUI password;
     public gotoLobby gotoLobby;
+    public UserInfoCache userInfoCache;
     
     static readonly HttpClient client = new HttpClient();
     async public void login()
@@ -57,12 +56,13 @@ public class loginController : MonoBehaviour
         string json = JsonUtility.ToJson(body);
         print(json);
         
-        string result = await NetworkRequest.PostRequest(NetworkURL.SIGN_IN, json);
+        string result = await NetworkRequest.PostRequest(NetworkURL.SIGN_IN, json, "");
         if (result != null)
         {
             print("login result:" + result);
             SignInResponse signInResponse = JsonUtility.FromJson<SignInResponse>(result);
             Debug.Log("get token" + signInResponse.token);
+            userInfoCache.setToken(signInResponse.token);
             gotoLobby.goToLobby();
         }
         
