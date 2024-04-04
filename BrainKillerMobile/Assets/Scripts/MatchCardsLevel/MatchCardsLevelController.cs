@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 using LevelLogic;
 using TMPro;
 using UnityEngine.UI;
 using Utilities;
+using Network;
 
 public enum MatchCardsGameState
 {
@@ -23,6 +25,7 @@ public class MatchCardsLevelController : LevelControllerBase
     public GameObject endCanvas;
     public GameObject imageLoader;
     public GameObject timer;
+    public TextMeshProUGUI title;
 
     public int TimeUsed = 0; // in seconds
     private float gameStartTime;
@@ -34,29 +37,8 @@ public class MatchCardsLevelController : LevelControllerBase
     public MatchCardsGameState gameState = MatchCardsGameState.Init;
     
     matchCardsLevelConfig curLevelConfig;
+    private ModeConfig curModeConfig;
     
-    public ModeConfig TestModeConfig = new ModeConfig()
-    {
-        modeName = "Match Cards",
-        modeDescription = "match the cards to win",
-        numOfLevels = 50
-    };
-    
-    public matchCardsLevelConfig testLevel = new matchCardsLevelConfig()
-    {
-        normalConfig = new LevelConfig()
-        {
-            modeName = "Match Cards",
-            levelId = 1,
-            levelName = "Match Cards 1",
-            levelDescription = "match the cards to win",
-        },
-        imageNames = new string[] {"0", "1", "2","3","4","5"},
-        showTime = 5,
-        numOfRow = 4,
-        numOfCol = 3,
-    };
-
     private void Awake()
     {
         Instance = this;
@@ -65,13 +47,41 @@ public class MatchCardsLevelController : LevelControllerBase
 
     private void Start()
     {
+        InitMode();
         InitLevel();
     }
 
-    public override void InitLevel()
+    public async void InitMode()
+    {
+        RequestResult<string> result = await NetworkRequest.GetRequest(NetworkURL.GET_MODE_CONFIG + "/matchCards/");
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get mode config");
+            return;
+        }
+        string modeConfigJson = result.Data;
+        curModeConfig = JsonUtility.FromJson<ModeConfig>(modeConfigJson);
+        print("Init mode:" + curModeConfig.modeName);
+    }
+
+    public async override void InitLevel()
     {
         // get config
-        curLevelConfig = testLevel;
+        int matchCardsProgess = UserInfoCache.getUserProfile().MatchCardsProgress;
+        title.text = $"level - {matchCardsProgess}";
+        string mode = "matchCards";
+        string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{matchCardsProgess}/";
+        RequestResult<string> result = await NetworkRequest.PostRequest(url, "");
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get level config");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        
+        curLevelConfig = JsonUtility.FromJson<matchCardsLevelConfig>(result.Data);
+        print(result.Data);
+        print(curLevelConfig.imageNames);
         
         // check for config
         if (!curLevelConfig.selfCheck())
@@ -81,9 +91,16 @@ public class MatchCardsLevelController : LevelControllerBase
         }
         
         // load images
-        List<string> imageNames = new List<string>(curLevelConfig.imageNames);
+        List<string> imageNames = new List<string>(curLevelConfig.imageNames.Split(","));
         MatchCardsImageLoader loader = imageLoader.GetComponent<MatchCardsImageLoader>();
-        List<Sprite> images = loader.LoadImages(imageNames);
+        bool res = await loader.LoadImages(imageNames);
+        if (!res)
+        {
+            Debug.LogError("Load images failed");
+            return;
+        }
+        
+        List<Sprite> images = loader.getImage();
         if (images == null)
         {
             Debug.LogError("Load images failed");
@@ -111,6 +128,12 @@ public class MatchCardsLevelController : LevelControllerBase
         {
             Debug.LogError("Load back image failed");
             return;
+        }
+        
+        // clear old child
+        for (int i = imagesParent.transform.childCount-1; i >= 0; i--)
+        {
+            Destroy(imagesParent.transform.GetChild(i).gameObject);
         }
         
         for (int i = 0; i < curLevelConfig.numOfRow * curLevelConfig.numOfCol; i++)
@@ -270,4 +293,38 @@ public class MatchCardsLevelController : LevelControllerBase
         endCanvasController.setResult(result);
         gameState = MatchCardsGameState.End;
     }
+
+    public override void retry()
+    {
+        endCanvas.SetActive(false);
+        InitLevel();
+    }
+
+    public async override void nextLevel()
+    {
+        // update user profile
+        User newUser = UserInfoCache.getUserProfile().DeepCopy();
+        newUser.MatchCardsProgress += 1;
+        string jsonBody = JsonUtility.ToJson(newUser);
+        print("update user profile:" + jsonBody);
+        RequestResult<string> result = await NetworkRequest.PostRequest(NetworkURL.USER_PROFILE, jsonBody);
+        if (!result.Success)
+        {
+            Debug.LogError("fail to update user profile");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        print("update flip progress feedback:" + result.Data);
+        
+        // refresh user info cache
+        User user = JsonUtility.FromJson<User>(result.Data);
+        UserInfoCache.setUserProfile(user);
+        
+        // get next level config
+        InitLevel();
+        
+        // hide end canvas
+        endCanvas.SetActive(false);
+    }
+
 }

@@ -29,7 +29,7 @@
     public struct matchCardsLevelConfig
     {
         public LevelConfig normalConfig;
-        public string[] imageNames;
+        public string imageNames;
         public int showTime;
         public int numOfRow;
         public int numOfCol;
@@ -41,7 +41,7 @@
                 return false;
             }
             
-            if (numOfCol * numOfRow / 2 != imageNames.Length)
+            if (numOfCol * numOfRow / 2 != imageNames.Split(",").Length)
             {
                 return false;
             }

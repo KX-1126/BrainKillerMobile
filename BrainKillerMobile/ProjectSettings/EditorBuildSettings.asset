@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MatchCards.unity
     guid: 3356e9439c3fcd8478c22740bfab6c26
+  - enabled: 1
+    path: Assets/Scenes/ImageDetective.unity
+    guid: 4d39435e3141be14f9a4065a5a5ff8d1
+  - enabled: 1
+    path: Assets/Scenes/BPCheck.unity
+    guid: a0c4b6e3270e257498bd869dd779c744
   m_configObjects: {}

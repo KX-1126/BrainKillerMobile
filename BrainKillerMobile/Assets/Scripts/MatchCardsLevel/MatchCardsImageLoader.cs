@@ -1,24 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
+using Network;
 
 public class MatchCardsImageLoader : MonoBehaviour
 {
-    public List<Sprite> LoadImages(List<string> imageNames)
+    private List<Sprite> images = new List<Sprite>();
+
+    public List<Sprite> getImage()
     {
-        // local retrive
-        List<Sprite> images = new List<Sprite>();
+        return images;
+    }
+    
+    public async Task<bool> LoadImages(List<string> imageNames)
+    {
         foreach (var name in imageNames)
         {
-            Sprite img = Resources.Load<Sprite>("GamesAssets/localRawImage/" + name);
+            Sprite img = await NetworkRequest.DownloadImage(name);
             if (img == null)
             {
                 Debug.LogError("Image " + name + " not found");
-                return null;
+                return false;
             }
             images.Add(img);
         }
 
-        return images;
+        return true;
     }
 }
