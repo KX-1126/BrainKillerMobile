@@ -8,7 +8,6 @@ namespace DefaultNamespace
     {
         public static UserInfoCache instance;
 
-        private static string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI2NDM1NTYsImd1ZXN0IjpmYWxzZSwidXNlckVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9.qWcCl-I_7m1bzXZ6ZMW5TMjGotr1bqfbd887n7hcUv8";
         private static User userProfile;
 
         void Awake()
@@ -30,26 +29,24 @@ namespace DefaultNamespace
             queryForUserProfile();
         }
 
-        public void setToken(string tokenString)
-        {
-            Debug.Log("set token " + token);
-            token = tokenString;
-            queryForUserProfile();
-        }
-        
-        public static string getToken()
-        {
-            return token;
-        }
-
         private async void queryForUserProfile()
         {
-            string jsonData = await NetworkRequest.GetRequest(NetworkURL.GET_USER_PROFILE, token);
+            RequestResult<string> result = await NetworkRequest.GetRequest(NetworkURL.USER_PROFILE);
             // Debug.Log(jsonData);
-            if (jsonData != null)
+            if (result.Success)
             {
-                userProfile = JsonUtility.FromJson<User>(jsonData);
+                userProfile = JsonUtility.FromJson<User>(result.Data);
             }
+            else
+            {
+                Debug.LogError("fail to get user profile");
+                print("error message:" + result.ErrorMessage);
+            }
+        }
+        
+        public static void setUserProfile(User user)
+        {
+            userProfile = user;
         }
 
         public static User getUserProfile()

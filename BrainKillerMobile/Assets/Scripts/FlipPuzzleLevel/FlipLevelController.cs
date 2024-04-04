@@ -39,25 +39,38 @@ public class FlipLevelController : LevelControllerBase
 
     public async void InitMode()
     {
-        string modeConfigJson = await NetworkRequest.GetRequest(NetworkURL.GET_MODE_CONFIG + "/flip/", UserInfoCache.getToken());
+        RequestResult<string> result = await NetworkRequest.GetRequest(NetworkURL.GET_MODE_CONFIG + "/flip/");
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get mode config");
+            return;
+        }
+        string modeConfigJson = result.Data;
         modeConfig = JsonUtility.FromJson<ModeConfig>(modeConfigJson);
         print("Init mode:" + modeConfig.modeName);
     }
 
     public async override void InitLevel(){
-        string token = UserInfoCache.getToken();
         int flipLevelProgress = UserInfoCache.getUserProfile().flipProgress;
         string mode = "flip";
         title.text = $"Level - {flipLevelProgress}";
         string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{flipLevelProgress}/";
-        string flipLevelConfigString = await NetworkRequest.PostRequest(url, "", token);
+        RequestResult<string> result = await NetworkRequest.PostRequest(url, "");
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get level config");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        
+        string flipLevelConfigString = result.Data;
         Debug.Log("get config json:" + flipLevelConfigString);
         
         // parse level config
         flipLevelConfig curLevelConfig = JsonUtility.FromJson<flipLevelConfig>(flipLevelConfigString); 
-        print(curLevelConfig.normalConfig.levelDescription);
-        print(curLevelConfig.frontImageName);
-        print(curLevelConfig.backImageName);
+        // print(curLevelConfig.normalConfig.levelDescription);
+        // print(curLevelConfig.frontImageName);
+        // print(curLevelConfig.backImageName);
         
         // set max try count
         MAX_TRY_COUNT = curLevelConfig.numOfItem * 2;
@@ -73,6 +86,12 @@ public class FlipLevelController : LevelControllerBase
         
         // split images
         (List<Sprite>,List<Sprite>) imageTuples = loader.getSplitedSprites(curLevelConfig.numOfItem);
+        
+        // clear old images
+        for (int i = imagesParent.transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
         
         // create a grid of images
         for (int i = 0; i < curLevelConfig.numOfItem; i++)
@@ -184,5 +203,31 @@ public class FlipLevelController : LevelControllerBase
         EndCanvasController endCanvasController = endCanvas.GetComponent<EndCanvasController>();
         endCanvasController.setResult(result);
     }
-
+    
+    public async override void nextLevel()
+    {
+        // update user profile
+        User newUser = UserInfoCache.getUserProfile().DeepCopy();
+        newUser.flipProgress += 1;
+        string jsonBody = JsonUtility.ToJson(newUser);
+        print("update user profile:" + jsonBody);
+        RequestResult<string> result = await NetworkRequest.PostRequest(NetworkURL.USER_PROFILE, jsonBody);
+        if (!result.Success)
+        {
+            Debug.LogError("fail to update user profile");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        print("update flip progress feedback:" + result.Data);
+        
+        // refresh user info cache
+        User user = JsonUtility.FromJson<User>(result.Data);
+        UserInfoCache.setUserProfile(user);
+        
+        // get next level config
+        InitLevel();
+        
+        // hide end canvas
+        endCanvas.SetActive(false);
+    }
 }

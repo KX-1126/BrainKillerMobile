@@ -13,7 +13,7 @@ public class FlipImageLoader : MonoBehaviour
 
     public async Task<bool> loadImage(string frontImageName, string backImageName)
     {
-        imageFront = await NetworkRequest.DownloadImage(frontImageName, UserInfoCache.getToken());
+        imageFront = await NetworkRequest.DownloadImage(frontImageName);
         
         if (imageFront == null)
         {
@@ -22,7 +22,7 @@ public class FlipImageLoader : MonoBehaviour
         }
         
         
-        imageBack = await NetworkRequest.DownloadImage(frontImageName, UserInfoCache.getToken());
+        imageBack = await NetworkRequest.DownloadImage(frontImageName);
         if (imageBack == null)
         {
             Debug.Log("Image back not found");

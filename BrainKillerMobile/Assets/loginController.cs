@@ -18,18 +18,32 @@ struct loginRequestBody
 public class User
 {
     public int ID;
-    public string CreatedAt;
-    public string UpdatedAt;
-    public string DeletedAt; // 如果您不需要处理这个字段，可以省略
     public string username;
     public string email;
-    public string password; // 注意：通常不建议在客户端处理密码
+    public string password; 
     public int flipProgress;
     public int imageDetectiveProgress;
     public int MatchCardsProgress;
     public int bpcheckProgress;
     public int rewardsGameProgress;
     public int rewardsScienceProgress;
+    
+    public User DeepCopy()
+    {
+        return new User
+        {
+            ID = this.ID,
+            username = this.username,
+            email = this.email,
+            password = this.password,
+            flipProgress = this.flipProgress,
+            imageDetectiveProgress = this.imageDetectiveProgress,
+            MatchCardsProgress = this.MatchCardsProgress,
+            bpcheckProgress = this.bpcheckProgress,
+            rewardsGameProgress = this.rewardsGameProgress,
+            rewardsScienceProgress = this.rewardsScienceProgress
+        };
+    }
 }
 
 public class SignInResponse
@@ -56,14 +70,18 @@ public class loginController : MonoBehaviour
         string json = JsonUtility.ToJson(body);
         print(json);
         
-        string result = await NetworkRequest.PostRequest(NetworkURL.SIGN_IN, json, "");
-        if (result != null)
+        RequestResult<string> result = await NetworkRequest.PostRequest(NetworkURL.SIGN_IN, json);
+        if (result.Success)
         {
             print("login result:" + result);
-            SignInResponse signInResponse = JsonUtility.FromJson<SignInResponse>(result);
+            SignInResponse signInResponse = JsonUtility.FromJson<SignInResponse>(result.Data);
             Debug.Log("get token" + signInResponse.token);
-            userInfoCache.setToken(signInResponse.token);
+            NetworkRequest.setToken(signInResponse.token);
             gotoLobby.goToLobby();
+        }
+        else
+        {
+            print("login failed error message:" + result.ErrorMessage);
         }
         
     }
