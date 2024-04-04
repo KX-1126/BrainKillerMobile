@@ -21,7 +21,6 @@ public class FlipImageLoader : MonoBehaviour
             return false;
         }
         
-        
         imageBack = await NetworkRequest.DownloadImage(frontImageName);
         if (imageBack == null)
         {

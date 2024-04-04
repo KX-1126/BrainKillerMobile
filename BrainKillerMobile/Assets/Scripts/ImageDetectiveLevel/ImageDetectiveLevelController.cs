@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using LevelLogic;
+using Network;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Assertions;
@@ -34,37 +36,60 @@ public class ImageDetectiveLevelController : LevelControllerBase
         numOfLevels = 50
     };
 
-    public imageDetectiveLevelConfig levelConfig = new imageDetectiveLevelConfig()
-    {
-        normalConfig = new LevelConfig()
-        {
-            modeName = "Match Cards",
-            levelId = 1,
-            levelName = "Match Cards 1",
-            levelDescription = "match the cards to win",
-        },
-        imageNames = new string[] { "0", "1" },
-        numOfRow = 7,
-        numOfCol = 6,
-        timeLimit = 90
-    };
-
+    private ModeConfig curModeConfig;
     private imageDetectiveLevelConfig curLevelConfig;
     
     private ImageDetectiveLevelState gameState = ImageDetectiveLevelState.Init;
 
     private string diffObjectName;
+    
+    public async void InitMode()
+    {
+        RequestResult<string> result = await NetworkRequest.GetRequest(NetworkURL.GET_MODE_CONFIG + "/imageDetective/");
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get mode config");
+            return;
+        }
+        string modeConfigJson = result.Data;
+        curModeConfig = JsonUtility.FromJson<ModeConfig>(modeConfigJson);
+        print("Init mode:" + curModeConfig.modeName);
+    }
 
-    public override void InitLevel()
+    public async override void InitLevel()
     {
         // get level config
-        curLevelConfig = levelConfig;
+        int imageDetectiveProgress = UserInfoCache.getUserProfile().imageDetectiveProgress;
+        string mode = "imageDetective";
+        string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{imageDetectiveProgress}/";
+        RequestResult<string> result = await NetworkRequest.PostRequest(url, "");
+        if (!result.Success)
+        {
+            Debug.LogError("Get level config failed");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        // print(result.Data);
+        
+        curLevelConfig = JsonUtility.FromJson<imageDetectiveLevelConfig>(result.Data);
+        // print(curLevelConfig.normalConfig.levelId);
+        // print(curLevelConfig.imageNames);
+        // print(curLevelConfig.numOfRow);
         
         // load images
-        List<Sprite> images = imageLoader.GetComponent<ImageDetectiveImageLoader>().LoadImages(curLevelConfig.imageNames);
-        if (images == null)
+        
+        bool downloadResult =
+            await imageLoader.GetComponent<ImageDetectiveImageLoader>().LoadImages(curLevelConfig.imageNames.Split(","));
+        if (!downloadResult)
         {
             Debug.LogError("Image load failed");
+            return;
+        }
+        
+        List<Sprite> images = imageLoader.GetComponent<ImageDetectiveImageLoader>().GetImages();
+        if (images == null)
+        {
+            Debug.LogError("Get all loaded images failed");
             return;
         }
 
@@ -78,6 +103,13 @@ public class ImageDetectiveLevelController : LevelControllerBase
         
         // choose the different index
         int diffIndex = UnityEngine.Random.Range(0, curLevelConfig.numOfRow * curLevelConfig.numOfCol);
+        
+        // clear old images
+        for (int i = imagesParent.transform.childCount-1; i >= 0 ; i--)
+        {
+            Destroy(imagesParent.transform.GetChild(i).gameObject);
+        }
+        
         
         // fill image
         for (int i = 0; i < curLevelConfig.numOfRow * curLevelConfig.numOfCol; i++)
@@ -117,6 +149,7 @@ public class ImageDetectiveLevelController : LevelControllerBase
 
     private void Start()
     {
+        InitMode();
         InitLevel();
     }
 
@@ -126,6 +159,10 @@ public class ImageDetectiveLevelController : LevelControllerBase
         if (name == diffObjectName)
         {
             showEndCanvas(true);
+        }
+        else
+        {
+            showEndCanvas(false);
         }
     }
 
@@ -141,7 +178,7 @@ public class ImageDetectiveLevelController : LevelControllerBase
                 showEndCanvas(false); // lose time out
             }
             
-            setTimerText(levelConfig.timeLimit - TimeUsed);
+            setTimerText(curLevelConfig.timeLimit - TimeUsed);
         }
     }
 
@@ -151,7 +188,7 @@ public class ImageDetectiveLevelController : LevelControllerBase
         timer.GetComponent<TextMeshProUGUI>().text = timeString;
         
         // set color to red if time is more than 60
-        if (time < levelConfig.timeLimit * 0.2)
+        if (time < curLevelConfig.timeLimit * 0.2)
         {
             timer.GetComponent<TextMeshProUGUI>().color = Color.red;
         }
@@ -163,6 +200,39 @@ public class ImageDetectiveLevelController : LevelControllerBase
         EndCanvasController endCanvasController = endCanvas.GetComponent<EndCanvasController>();
         endCanvasController.setResult(result);
         gameState = ImageDetectiveLevelState.End;
+    }
+
+    public override void retry()
+    {
+        endCanvas.SetActive(false);
+        InitLevel();
+    }
+
+    public async override void nextLevel()
+    {
+        // update user profile
+        User newUser = UserInfoCache.getUserProfile().DeepCopy();
+        newUser.imageDetectiveProgress += 1;
+        string jsonBody = JsonUtility.ToJson(newUser);
+        print("update user profile:" + jsonBody);
+        RequestResult<string> result = await NetworkRequest.PostRequest(NetworkURL.USER_PROFILE, jsonBody);
+        if (!result.Success)
+        {
+            Debug.LogError("fail to update user profile");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        print("update flip progress feedback:" + result.Data);
+        
+        // refresh user info cache
+        User user = JsonUtility.FromJson<User>(result.Data);
+        UserInfoCache.setUserProfile(user);
+        
+        // get next level config
+        InitLevel();
+        
+        // hide end canvas
+        endCanvas.SetActive(false);
     }
     
 

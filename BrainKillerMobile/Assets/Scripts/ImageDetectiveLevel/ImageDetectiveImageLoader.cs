@@ -1,22 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Network;
 using UnityEngine;
 
 public class ImageDetectiveImageLoader : MonoBehaviour
 {
-    public List<Sprite> LoadImages(string[] imageNames)
+    private List<Sprite> images = new List<Sprite>();
+    
+    public async Task<bool> LoadImages(string[] imageNames)
     {
-        List<Sprite> images = new List<Sprite>();
+        images.Clear();
+        print(imageNames);
         foreach (string name in imageNames)
         {
-            Sprite s = Resources.Load<Sprite>("GamesAssets/SimilarImages/" + name);
+            Sprite s = await NetworkRequest.DownloadImage(name);
             if (s == null)
             {
-                Debug.LogError("ImageDetectiveImageLoader: " + name + " not found");
-                continue;
+                Debug.LogError("ImageDetectiveImageLoader: image name of " + name + " not found");
+                return false;
             }
+            print("ImageDetectiveImageLoader: image name of " + name + " downloaded");
             images.Add(s);
         }
+        return true;
+    }
+    
+    public List<Sprite> GetImages()
+    {
         return images;
     }
+    
 }

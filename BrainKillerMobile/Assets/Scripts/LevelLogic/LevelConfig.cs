@@ -54,7 +54,7 @@
     public struct imageDetectiveLevelConfig
     {
         public LevelConfig normalConfig;
-        public string[] imageNames;
+        public string imageNames;
         public int numOfRow;
         public int numOfCol;
         public int timeLimit;

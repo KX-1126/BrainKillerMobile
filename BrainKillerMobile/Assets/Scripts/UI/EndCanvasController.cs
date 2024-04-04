@@ -18,7 +18,6 @@ public class EndCanvasController : MonoBehaviour
         LevelControllerBase levelController = this.levelControllerGameObject.GetComponent<LevelControllerBase>();
         
         //set button action
-        //set button action
         if (retryButton != null)
         {
             retryButton.onClick.AddListener(levelController.retry);
@@ -37,6 +36,7 @@ public class EndCanvasController : MonoBehaviour
         if (result)
         {
             title.text = "You Win!";
+            retryButton.gameObject.SetActive(false);
         }
         else
         {
