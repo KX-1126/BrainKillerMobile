@@ -16,6 +16,7 @@ public class CropWithSwcBp : MonoBehaviour
     public TextMeshProUGUI textIndicator;
     
     private List<Tuple<Dataset3D, SWC>> croppedData = new List<Tuple<Dataset3D, SWC>>();
+    private List<int> croppedDataBpIndexList = new List<int>();
     private int croppedDataIndex = 0;
 
     public int getCroppedDataCount()
@@ -63,6 +64,10 @@ public class CropWithSwcBp : MonoBehaviour
             return;
         }
         
+        // clear old data
+        croppedData.Clear();
+        croppedDataBpIndexList.Clear();
+        
         // get centers(bp point)
         List<Vector3> bpPoints = new List<Vector3>();
         croppedData = new List<Tuple<Dataset3D, SWC>>();
@@ -85,22 +90,28 @@ public class CropWithSwcBp : MonoBehaviour
             // crop dataset
             Vector3 intBpPos = new Vector3(Mathf.RoundToInt(bpPoint.x), Mathf.RoundToInt(bpPoint.y), Mathf.RoundToInt(bpPoint.z));
             Dataset3D croppedDataset = new Dataset3D();
-            croppedDataset = dataset.crop(dataset.datasetName + "_cropped_" + count.ToString(), dim, dim, dim, intBpPos);
+            croppedDataset = dataset.crop(dataset.datasetName + "_cropped_" + node.id, dim, dim, dim, intBpPos);
             
             // crop swc
             // check for bp and center distance
             
             SWC croppedSwc = new SWC();
-            croppedSwc = swc.cropFromBp("cropped_swc_" + count.ToString(), node, dim, dim, dim);
+            croppedSwc = swc.cropFromBp("cropped_swc_" + node.id, node, dim, dim, dim);
             
             // add to list
             croppedData.Add(new Tuple<Dataset3D, SWC>(croppedDataset, croppedSwc));
+            croppedDataBpIndexList.Add(node.id);
             croppedDataIndex = 0;
         }
         
         print($"total {count} cropped data: ");
 
         textIndicator.text = $"{1}/{croppedData.Count}";
+    }
+
+    public int getCurrentBpIndex()
+    {
+        return croppedDataBpIndexList[croppedDataIndex-1];
     }
     
     [ContextMenu("Render cropped data")]

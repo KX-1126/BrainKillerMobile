@@ -64,6 +64,7 @@
     public struct BPCheckLevelConfig
     {
         public LevelConfig normalConfig;
+        public int swcId;
         public string imageName;
         public string swcName;
     }

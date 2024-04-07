@@ -52,7 +52,6 @@ public class LongPressEventTrigger : MonoBehaviour, IPointerDownHandler, IPointe
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        print("OnPointerExit");
         isPointerDown = false;
     }
 }

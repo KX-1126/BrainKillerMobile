@@ -36,12 +36,18 @@ public class EndCanvasController : MonoBehaviour
         if (result)
         {
             title.text = "You Win!";
-            retryButton.gameObject.SetActive(false);
+            if (retryButton != null)
+            {
+                retryButton.gameObject.SetActive(false);
+            }
         }
         else
         {
             title.text = "You Fail!";
-            nextButton.gameObject.SetActive(false);
+            if (nextButton != null)
+            {
+                nextButton.gameObject.SetActive(false);
+            }
         }
     }
 }

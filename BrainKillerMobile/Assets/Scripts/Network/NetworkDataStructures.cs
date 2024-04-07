@@ -25,7 +25,12 @@ namespace Network
         public static readonly string USER_PROFILE = SERVER + "/user/profile";
         
         public static readonly string GET_MODE_CONFIG = SERVER + "/getModeConfig";
-        public static readonly string GET_LEVELCONFIG = SERVER + "/getLevelConfig";
+        public static readonly string GET_LEVEL_CONFIG = SERVER + "/getLevelConfig";
+        
+        public static readonly string BP_LEVEL_CONFIG = SERVER + "/getBpCheckLevelConfig/";
+        public static readonly string POST_BP_CHECK_RESULT = SERVER + "/postBpAnnotations/";
+        
+        public static readonly string GET_ACHIEVEMENTS = SERVER + "/getAllAchievements/";
 
         public static readonly string IMG_RES = "http://121.43.239.122:8080/static/";
     }
@@ -94,6 +99,34 @@ namespace Network
                     ErrorMessage = content
                 };
                 return result;
+            }
+        }
+        
+        public static async Task<byte[]> DownloadImage3d(string imageName)
+        {
+            string url = NetworkURL.IMG_RES + imageName; // Construct the full URL
+            Debug.Log("downloading image with path:" + url);
+            // Set the authorization header with the provided token
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userAuthToken);
+    
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    byte[] imageBytes = await response.Content.ReadAsByteArrayAsync();
+                    return imageBytes;
+                }
+                else
+                {
+                    Debug.LogError($"Failed to download image. Status code: {response.StatusCode}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Exception occurred while downloading image: {ex.Message}");
+                return null;
             }
         }
 

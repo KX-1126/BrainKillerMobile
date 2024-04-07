@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LevelLogic;
 using UnityEngine;
 using DataLoader;
+using DefaultNamespace;
+using Network;
 
 enum BPCheckLevelState
 {
@@ -11,6 +14,14 @@ enum BPCheckLevelState
     Commit, //upload results
     FinalShow, // show the whole image
     Finish
+}
+
+public struct BpCheckResult
+{
+    public int userId;
+    public int swcId;
+    public string correctBp;
+    public string wrongBp;
 }
 
 public class BPCheckLevelController : LevelControllerBase
@@ -22,26 +33,9 @@ public class BPCheckLevelController : LevelControllerBase
     public List<GameObject> Buttons;
 
     private BPCheckLevelState state;
-    
-    public ModeConfig testModeConfig = new ModeConfig()
-    {
-        modeName = "BPCheck",
-        modeDescription = "Check the BP",
-        numOfLevels = 50
-    };
-    
-    public BPCheckLevelConfig testLevelConfig = new BPCheckLevelConfig()
-    {
-        normalConfig = new LevelConfig()
-        {
-            modeName = "BPCheck",
-            levelId = 1,
-            levelName = "BPCheck 1",
-            levelDescription = "Check the BP",
-        },
-        imageName = "test2.v3draw",
-        swcName = "test2.swc"
-    };
+    private ModeConfig curModeConfig;
+    private  BPCheckLevelConfig curLevelConfig;
+    private int SWCId;
 
     private void Start()
     {
@@ -49,21 +43,56 @@ public class BPCheckLevelController : LevelControllerBase
         InitLevel();
     }
 
-    public override void InitLevel()
+    public async void InitMode()
+    {
+        RequestResult<string> result = await NetworkRequest.GetRequest(NetworkURL.GET_MODE_CONFIG + "/bpCheck/");
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get mode config");
+            return;
+        }
+        string modeConfigJson = result.Data;
+        curModeConfig = JsonUtility.FromJson<ModeConfig>(modeConfigJson);
+        print("Init mode:" + curModeConfig.modeName);
+    }
+
+    public async override void InitLevel()
     {
         // parse level config
-        BPCheckLevelConfig curLevelConfig = testLevelConfig;
+        RequestResult<string> result = await NetworkRequest.GetRequest(NetworkURL.BP_LEVEL_CONFIG);
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get level config");
+            print("error message:" + result.ErrorMessage);
+            return;
+        }
+        
+        curLevelConfig = JsonUtility.FromJson<BPCheckLevelConfig>(result.Data);
+        SWCId = curLevelConfig.swcId;
+        print(curLevelConfig.imageName);
+        print(curLevelConfig.swcName);
         
         // get image and swc
-        string testSWCPath = "Assets/Resources/GamesAssets/" + curLevelConfig.swcName;
-        string testImagePath = "Assets/Resources/GamesAssets/" + curLevelConfig.imageName;
+        string SWCPath = NetworkURL.IMG_RES + curLevelConfig.swcName;
+        // string ImagePath = NetworkURL.IMG_RES + curLevelConfig.imageName;
         
         SWCRender swcRender = SWC.GetComponent<SWCRender>();
-        swcRender.swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
+        List<Node> nodes = await SWCDataStructure.loadSWCFromURL(SWCPath);
+        if (nodes.Count == 0)
+        {
+            print("load swc from url failed");
+            return;
+        }
+        swcRender.swc.buildTree(nodes);
         swcRender.Render(swcRender.swc);
         
         VolumeGenerator volumeGenerator = image.GetComponent<VolumeGenerator>();
-        volumeGenerator.currentDataset = V3dRawDataLoader.readV3dRawFromLocalFile(testImagePath);
+        volumeGenerator.currentDataset = await V3dRawDataLoader.readV3dRawFromURL(curLevelConfig.imageName);
+        if (volumeGenerator.currentDataset == null)
+        {
+            print("load v3draw image from url failed");
+            return;
+        }
         volumeGenerator.originalDataset = volumeGenerator.currentDataset;
         volumeGenerator.GenerateVolumeObject(volumeGenerator.currentDataset);
         
@@ -119,7 +148,7 @@ public class BPCheckLevelController : LevelControllerBase
         }
     }
 
-    public void handleUserInput(BPCheckResultType result)
+    public async void handleUserInput(BPCheckResultType result)
     {
         if (state != BPCheckLevelState.Play)
         {
@@ -133,12 +162,42 @@ public class BPCheckLevelController : LevelControllerBase
         GameObject feedbackObject = Instantiate(feedback, SWC.transform);
         feedbackObject.transform.position = SWC.transform.position;
         
-        // upload result
-        print("get result" + result.ToString());
-
         state = BPCheckLevelState.Commit;
-        //upload result
         
+        // upload result
+        CropWithSwcBp cropper = cropAction.GetComponent<CropWithSwcBp>();
+        string bpIndex = cropper.getCurrentBpIndex().ToString() ;
+        string correctBpIndex = "";
+        string wrongBpIndex = "";
+        if (result == BPCheckResultType.Correct)
+        {
+            correctBpIndex = bpIndex;
+        }
+        else
+        {
+            wrongBpIndex = bpIndex;
+        }
+        BpCheckResult BpResult = new BpCheckResult()
+        {
+            userId = UserInfoCache.getUserProfile().ID,
+            swcId = SWCId,
+            correctBp = correctBpIndex,
+            wrongBp = wrongBpIndex,
+        };
+
+        string jsonBody = JsonUtility.ToJson(BpResult);
+        print(jsonBody);
+        
+        RequestResult<string> postResult = await NetworkRequest.PostRequest(NetworkURL.POST_BP_CHECK_RESULT,jsonBody);
+        if (!postResult.Success)
+        {
+            Debug.LogError("post annotations failed");
+            print("error message:" + postResult.ErrorMessage);
+        }
+        else
+        {
+            print($"post annotations success, mark bp of index {bpIndex} as {result.ToString()}");
+        }
         // show next bp 
         // should be called after upload result
         Invoke(nameof(nextBp),1.0f);
@@ -146,6 +205,7 @@ public class BPCheckLevelController : LevelControllerBase
 
     public override void nextLevel()
     {
-        // reget level config
+        InitLevel();
+        endCanvas.SetActive(false);
     }
 }

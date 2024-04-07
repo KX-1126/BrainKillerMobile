@@ -61,7 +61,7 @@ public class ImageDetectiveLevelController : LevelControllerBase
         // get level config
         int imageDetectiveProgress = UserInfoCache.getUserProfile().imageDetectiveProgress;
         string mode = "imageDetective";
-        string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{imageDetectiveProgress}/";
+        string url = NetworkURL.GET_LEVEL_CONFIG + $"/{mode}/{imageDetectiveProgress}/";
         RequestResult<string> result = await NetworkRequest.PostRequest(url, "");
         if (!result.Success)
         {

@@ -70,7 +70,7 @@ public class MatchCardsLevelController : LevelControllerBase
         int matchCardsProgess = UserInfoCache.getUserProfile().MatchCardsProgress;
         title.text = $"level - {matchCardsProgess}";
         string mode = "matchCards";
-        string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{matchCardsProgess}/";
+        string url = NetworkURL.GET_LEVEL_CONFIG + $"/{mode}/{matchCardsProgess}/";
         RequestResult<string> result = await NetworkRequest.PostRequest(url, "");
         if (!result.Success)
         {

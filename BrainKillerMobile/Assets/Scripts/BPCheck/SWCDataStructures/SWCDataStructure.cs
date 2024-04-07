@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using System.Threading.Tasks;
+using Network;
 
 public class Node
 {
@@ -207,5 +209,18 @@ public class SWCDataStructure : MonoBehaviour
     {
         string swcText = System.IO.File.ReadAllText(swcPath);
         return loadSWC(swcText);
+    }
+
+    public async static Task<List<Node>> loadSWCFromURL(string url)
+    {
+        print("Downloading swc from url: " + url);
+        RequestResult<string> result = await NetworkRequest.GetRequest(url);
+        if (!result.Success)
+        {
+            Debug.LogError("fail to get swc from url:" + url);
+            return null;
+        }
+
+        return loadSWC(result.Data);
     }
 }

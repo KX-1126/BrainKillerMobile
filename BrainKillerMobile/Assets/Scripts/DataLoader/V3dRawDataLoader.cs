@@ -2,6 +2,8 @@
 using System.Linq;
 using UnityEngine;
 using System.IO;
+using System.Threading.Tasks;
+using Network;
 
 namespace DataLoader
 {
@@ -42,8 +44,8 @@ namespace DataLoader
             float maxValue = float.MinValue;
             float minValue = float.MaxValue;
 
-            // print("total count" + totalCount);
-            // print("total bytes" + imageData.Length);
+            print("total count" + totalCount);
+            print("total bytes" + imageData.Length);
             
             for (int i = bytesToSkip; i < totalCount+bytesToSkip; i++)
             {
@@ -79,6 +81,12 @@ namespace DataLoader
         {
             byte[] byteArray = File.ReadAllBytes(filePath);
             return loadV3dRawImage(byteArray);
+        }
+
+        public async static Task<Dataset3D> readV3dRawFromURL(string imageName)
+        {
+            byte[] imgeBytes = await NetworkRequest.DownloadImage3d(imageName);
+            return loadV3dRawImage(imgeBytes);
         }
     }
     

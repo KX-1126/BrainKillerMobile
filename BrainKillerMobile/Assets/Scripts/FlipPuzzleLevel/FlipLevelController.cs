@@ -54,7 +54,7 @@ public class FlipLevelController : LevelControllerBase
         int flipLevelProgress = UserInfoCache.getUserProfile().flipProgress;
         string mode = "flip";
         title.text = $"Level - {flipLevelProgress}";
-        string url = NetworkURL.GET_LEVELCONFIG + $"/{mode}/{flipLevelProgress}/";
+        string url = NetworkURL.GET_LEVEL_CONFIG + $"/{mode}/{flipLevelProgress}/";
         RequestResult<string> result = await NetworkRequest.PostRequest(url, "");
         if (!result.Success)
         {
