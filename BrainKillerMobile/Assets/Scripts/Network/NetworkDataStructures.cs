@@ -38,7 +38,7 @@ namespace Network
     public class NetworkRequest : MonoBehaviour
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private static string userAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI4MDQ1NDksImd1ZXN0IjpmYWxzZSwidXNlckVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9.XuEWqqjgwKjDlkgM3o_Qs-bJ681np_HU3I6GSl53Fak";
+        private static string userAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM0MjYzMTYsImd1ZXN0IjpmYWxzZSwidXNlckVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9.7mv9DeVqLnedRIk4ib6MpRyolpNACAizh1T7Pj2Nrzg";
         
         public static void setToken(string token)
         {

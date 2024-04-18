@@ -7,6 +7,7 @@ using DefaultNamespace;
 using TMPro;
 using UnityEngine;
 using Network;
+using UnityEngine.SceneManagement;
 
 struct loginRequestBody
 {
@@ -85,10 +86,12 @@ public class loginController : MonoBehaviour
         }
         
     }
-    
-    static string RemoveZeroWidthSpaces(string s) // handle on server side
+
+    public void gotoRegister()
     {
-        return s.Replace("\u200B", "");
+        SceneManager.LoadScene("Register");
     }
+    
+    
 
 }
