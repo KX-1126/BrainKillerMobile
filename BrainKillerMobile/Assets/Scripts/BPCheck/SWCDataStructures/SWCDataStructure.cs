@@ -55,23 +55,14 @@ public class SWC
             Debug.LogError("no head node found");
             return null;
         }
-
-        float sumX = 0.0f;
-        float sumY = 0.0f;
-        float sumZ = 0.0f;
         
         foreach (Node node in nodes)
         {
-            sumX += node.x;
-            sumY += node.y;
-            sumZ += node.z;
-            
-            if (node.pid == -1)
+            int pid = node.pid;
+            if (pid == -1)
             {
                 continue;
             }
-            
-            int pid = node.pid;
             if (indexNodeMap.ContainsKey(pid))
             {
                 Node parentNode = indexNodeMap[pid];
@@ -85,10 +76,7 @@ public class SWC
             }
         }
         
-        float centerX = sumX / nodes.Count;
-        float centerY = sumY / nodes.Count;
-        Debug.Log("average center of nodes: " + centerX + " " + centerY);
-        center = new Vector2(centerX, centerY);
+        center = new Vector3(head.x, head.y, head.z);
         
         foreach (Node node in nodes)
         {
