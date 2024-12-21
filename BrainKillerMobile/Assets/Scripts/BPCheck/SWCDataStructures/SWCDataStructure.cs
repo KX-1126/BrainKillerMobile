@@ -89,7 +89,7 @@ public class SWC
             {
                 if (node.children.Count > 2) // use as normal branch node
                 {
-                    Debug.Log($"node {node.id} has more than 2 children");
+                    Debug.LogWarning($"node {node.id} has more than 2 children");
                 }
                 branchNodes.Add(node);
             }
@@ -113,6 +113,10 @@ public class SWCDataStructure : MonoBehaviour
         List<Node> nodes = new List<Node>();
         foreach (string line in lines)
         {
+            if (line == null || line.Length == 0)
+            {
+                continue;
+            }
             if (line.Length > 0 && line[0] != '#')
             {
                 string[] parts = line.Split(' ');
@@ -125,11 +129,11 @@ public class SWCDataStructure : MonoBehaviour
                 node.radius = float.Parse(parts[5]);
                 node.pid = int.Parse(parts[6]);
                 
-                if(node.x == 0 && node.y == 0 && node.z == 0)
-                {
-                    // Debug.Log("skip node whose position is 0,0,0");
-                    continue;
-                }
+                // if(node.x == 0 && node.y == 0 && node.z == 0)
+                // {
+                //     Debug.Log("skip node whose position is 0,0,0");
+                //     continue;
+                // }
                 
                 nodes.Add(node);
             }

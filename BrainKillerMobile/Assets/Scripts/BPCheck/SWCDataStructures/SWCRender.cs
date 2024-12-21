@@ -1,15 +1,43 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BPCheck.SwcIO;
 using UnityEngine;
 
 public class SWCRender : MonoBehaviour
 {
+    private float timer = 0f;
+    private float updateInterval = 1f;
+
     private void Start()
     {
-        string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
+        // string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
+        // SWC swc = new SWC();
+        // swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
+        // Render(swc);
+
+    }
+
+    private void Update() {
+        timer += Time.deltaTime;
+        if (timer >= updateInterval) {
+            timer = 0f;
+            // Call the method to update the SWC
+            UpdateSwc();
+        }
+    }
+
+    private void UpdateSwc() {
+        // Logic to update the SWC
+        // This could involve re-reading the SWC file and re-rendering
+        SwcFileReader swcFileReader = new SwcFileReader();
+        string swcText = swcFileReader.readSwcFile("F:\\Repos\\Tree_CRDT\\tree_255.swc");
+        if (swcText == "") {
+            print("SWC file read failed");
+            return;
+        }
         SWC swc = new SWC();
-        swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
+        swc.buildTree(SWCDataStructure.loadSWC(swcText));
         Render(swc);
     }
 
