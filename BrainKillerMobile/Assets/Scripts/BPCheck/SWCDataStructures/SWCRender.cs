@@ -7,7 +7,7 @@ public class SWCRender : MonoBehaviour
 {
     private void Start()
     {
-        string testSWCPath = "Assets/Resources/GamesAssets/test.swc";
+        string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
         SWC swc = new SWC();
         swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
         Render(swc);

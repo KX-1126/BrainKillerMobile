@@ -8,7 +8,7 @@ public class testVolumeGeneration : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string testImagePath = "Assets/Resources/GamesAssets/test.v3draw";
+        string testImagePath = "Assets/Resources/GamesAssets/test2.v3draw";
         Dataset3D dataset = V3dRawDataLoader.readV3dRawFromLocalFile(testImagePath);
         
         GameObject volumeObject = VolumeObjectFactory.createVolumeObject(dataset);
