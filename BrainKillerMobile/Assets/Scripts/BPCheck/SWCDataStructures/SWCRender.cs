@@ -43,7 +43,7 @@ public class SWCRender : MonoBehaviour
 
     public void Render(SWC swc)
     {
-        print("Rendering SWC of " + swc.numNodes + " nodes");
+        // print("Rendering SWC of " + swc.numNodes + " nodes");
         foreach (Node node in swc.indexNodeMap.Values)
         {
             GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
@@ -84,6 +84,6 @@ public class SWCRender : MonoBehaviour
             }
         }
         
-        print("Rendering SWC finished");
+        // print("Rendering SWC finished");
     }
 }

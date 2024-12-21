@@ -87,7 +87,7 @@ public class SWC
             
             if (node.children.Count > 1)
             {
-                if (node.children.Count > 2) // use as normal branch node
+                if (node.children.Count > 2 && node.pid != -1) // use as normal branch node
                 {
                     Debug.LogWarning($"node {node.id} has more than 2 children");
                 }
@@ -100,7 +100,7 @@ public class SWC
         }
 
         numNodes = indexNodeMap.Count;
-        Debug.Log($"Successfully build tree of {numNodes} nodes");
+        // Debug.Log($"Successfully build tree of {numNodes} nodes");
         return this;
     }
 }
