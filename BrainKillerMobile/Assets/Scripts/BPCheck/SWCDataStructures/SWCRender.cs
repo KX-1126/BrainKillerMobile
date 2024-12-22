@@ -9,6 +9,8 @@ public class SWCRender : MonoBehaviour
     private float timer = 0f;
     private float updateInterval = 1f;
 
+    public SWC curSwc;
+
     private void Start()
     {
         // string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
@@ -43,6 +45,12 @@ public class SWCRender : MonoBehaviour
 
     public void Render(SWC swc)
     {
+        curSwc = swc;
+        // clear the previous rendering
+        foreach (Transform child in this.transform)
+        {
+            Destroy(child.gameObject);
+        }
         // print("Rendering SWC of " + swc.numNodes + " nodes");
         foreach (Node node in swc.indexNodeMap.Values)
         {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+using System;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
@@ -28,6 +28,19 @@ public class SWC
     public List<Node> endNodes = new List<Node>();
     public List<Node> branchNodes = new List<Node>();
     public Vector3 center;
+
+    public int GetRandomIndex()
+    {
+        if (indexNodeMap.Count == 0)
+        {
+            return -1;
+        }
+
+        System.Random random = new System.Random();
+        List<int> keys = new List<int>(indexNodeMap.Keys);
+        int randomIndex = random.Next(keys.Count);
+        return keys[randomIndex];
+    }
     
     public SWC buildTree(List<Node> nodes)
     {

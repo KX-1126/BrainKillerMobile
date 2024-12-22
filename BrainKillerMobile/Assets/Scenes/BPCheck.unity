@@ -1602,7 +1602,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 836, y: 448}
+  m_AnchoredPosition: {x: 836, y: 516}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &922260649
@@ -1617,6 +1617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e9b5b3f898f61d4e8775f0868008900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  render: {fileID: 1651780038}
 --- !u!114 &922260650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1639,7 +1640,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9528302, g: 0.33858424, b: 0.33858424, a: 1}
+    m_HighlightedColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
