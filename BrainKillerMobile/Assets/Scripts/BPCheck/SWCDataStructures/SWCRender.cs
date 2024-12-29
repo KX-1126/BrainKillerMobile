@@ -25,7 +25,7 @@ public class SWCRender : MonoBehaviour
         if (timer >= updateInterval) {
             timer = 0f;
             // Call the method to update the SWC
-            UpdateSwc();
+            // UpdateSwc();
         }
     }
 
