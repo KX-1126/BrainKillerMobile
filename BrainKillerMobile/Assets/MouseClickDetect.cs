@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ public class MouseClickDetect : MonoBehaviour
 {
     public testVolumeGeneration targetColliderParent;
     private CoordinateMapping coordinateMapping = new CoordinateMapping();
+    private List<GameObject> addedNodes = new List<GameObject>();
+    private List<Vector3> texturePointsHistory = new List<Vector3>();
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -21,10 +24,6 @@ public class MouseClickDetect : MonoBehaviour
             if (targetCollider.Raycast(ray, out hit, Mathf.Infinity))
             {
                 GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
-                // GameObject nodeGameObject = Instantiate(nodePrefab);
-                // nodeGameObject.transform.localScale = Vector3.one;
-                // nodeGameObject.transform.position = hit.point;
-                // nodeGameObject.transform.SetParent(hit.collider.transform);
 
                 // 将世界坐标系的交点转换为碰撞体的局部坐标系
                 Vector3 localHitPoint = hit.collider.transform.InverseTransformPoint(hit.point);
@@ -39,6 +38,7 @@ public class MouseClickDetect : MonoBehaviour
 
                 // 获取局部坐标系下的最大强度点
                 Vector3 localMaxIntensityPoint = getLocalMaxIntensityPoint(localHitPoint, localRay);
+                texturePointsHistory.Add(localMaxIntensityPoint);
                 // Debug.Log("Local Max Intensity Point: " + localMaxIntensityPoint);
 
                 // 将局部坐标系下的最大强度点转换为世界坐标系
@@ -50,6 +50,7 @@ public class MouseClickDetect : MonoBehaviour
                 maxIntensityNode.transform.localScale = Vector3.one;
                 maxIntensityNode.transform.position = worldMaxIntensityPoint;
                 maxIntensityNode.transform.SetParent(hit.collider.transform);
+                addedNodes.Add(maxIntensityNode);
             }
         }
     }
@@ -57,5 +58,20 @@ public class MouseClickDetect : MonoBehaviour
     public Vector3 getLocalMaxIntensityPoint(Vector3 hitPoint, Ray ray)
     {
         return coordinateMapping.calculateMaxIntensityPoint(targetColliderParent.getDataset(), hitPoint, ray, 128);
+    }
+
+    public List<GameObject> getAddedNodes()
+    {
+        return addedNodes;
+    }
+
+    public List<Vector3> getTexturePointsHistory()
+    {
+        return texturePointsHistory;
+    }
+
+    public GameObject getImageGameObject()
+    {
+        return targetColliderParent.transform.GetChild(0).GetChild(0).gameObject;
     }
 }

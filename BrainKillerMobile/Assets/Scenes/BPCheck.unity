@@ -1576,14 +1576,14 @@ GameObject:
   - component: {fileID: 922260652}
   - component: {fileID: 922260651}
   - component: {fileID: 922260650}
-  - component: {fileID: 922260649}
+  - component: {fileID: 922260653}
   m_Layer: 5
-  m_Name: addOp
+  m_Name: ConnectButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &922260648
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1605,19 +1605,6 @@ RectTransform:
   m_AnchoredPosition: {x: 836, y: 516}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &922260649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 922260647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e9b5b3f898f61d4e8775f0868008900, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  render: {fileID: 1651780038}
 --- !u!114 &922260650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1662,9 +1649,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 922260649}
-        m_TargetAssemblyTypeName: addMoveAction, Assembly-CSharp
-        m_MethodName: sendRandomAction
+      - m_Target: {fileID: 922260653}
+        m_TargetAssemblyTypeName: ConnectTwoDots, Assembly-CSharp
+        m_MethodName: connectLastTwoDots
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1712,6 +1699,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 922260647}
   m_CullTransparentMesh: 1
+--- !u!114 &922260653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922260647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdf110578e94b1145a410d2337641294, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetColliderParent: {fileID: 2069660825}
+  mouseClickDetect: {fileID: 2069660826}
 --- !u!1 &926726271
 GameObject:
   m_ObjectHideFlags: 0
@@ -2739,7 +2740,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Add Move
+  m_text: 'Connect
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3273,7 +3276,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetColliderParent: {fileID: 2069660825}
-  cylinderMaterial: {fileID: 0}
 --- !u!114 &2069660827
 MonoBehaviour:
   m_ObjectHideFlags: 0

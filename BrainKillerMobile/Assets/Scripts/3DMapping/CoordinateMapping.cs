@@ -40,6 +40,7 @@ public class CoordinateMapping
                 texturePoint.y < 0 || texturePoint.y >= dataset.dimY ||
                 texturePoint.z < 0 || texturePoint.z >= dataset.dimZ)
             {
+                // Debug.LogWarning("Texture Point out of range: " + texturePoint);
                 continue;
             }
             texturePoints.Add(texturePoint);
@@ -49,6 +50,7 @@ public class CoordinateMapping
 
     private Vector3 rayPoint2TexturePoint(Vector3 rayPoint, Dataset3D dataset)
     {
+        fillDataArrayIfNeeded(dataset);
         Vector3 newPoint = rayPoint + new Vector3(0.5f, 0.5f, 0.5f);
         Vector3 texturePoint = Vector3.zero;
         texturePoint.x = newPoint.x * dataset.dimX;
@@ -58,7 +60,7 @@ public class CoordinateMapping
         return texturePoint;
     }
 
-    private Vector3 texturePoint2RayPoint(Vector3 texturePoint, Dataset3D dataset)
+    public Vector3 texturePoint2RayPoint(Vector3 texturePoint, Dataset3D dataset)
     {
         Vector3 rayPoint = Vector3.zero;
         rayPoint.x = texturePoint.x / dataset.dimX;
@@ -89,7 +91,7 @@ public class CoordinateMapping
         return rayPoint;
     }
 
-    private void fillDataArrayIfNeeded(Dataset3D dataset)
+    public void fillDataArrayIfNeeded(Dataset3D dataset)
     {
         if (dataArray3D == null)
         {
