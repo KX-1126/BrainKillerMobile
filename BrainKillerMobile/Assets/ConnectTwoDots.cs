@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using DataLoader;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ConnectTwoDots : MonoBehaviour
@@ -43,7 +45,12 @@ public class ConnectTwoDots : MonoBehaviour
             worldPath.Add(coordinateMapping.texturePoint2RayPoint(path[i], dataset));
         }
         GameObject imageObject = mouseClickDetect.getImageGameObject();
+        int gap = 5;
+        GameObject lastNode = null;
         for (int i = 0; i < worldPath.Count; i++) {
+            if (i != 0 && i != worldPath.Count - 1 && (i % gap != 0)) {
+                continue;
+            }
             Vector3 worldPoint = imageObject.transform.TransformPoint(worldPath[i]);
             GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
             GameObject nodeGameObject = Instantiate(nodePrefab);
@@ -51,14 +58,31 @@ public class ConnectTwoDots : MonoBehaviour
             nodeGameObject.transform.localScale = Vector3.one;
             nodeGameObject.transform.position = worldPoint;
             nodeGameObject.transform.SetParent(imageObject.transform);
+
+            // generte a line between two nodes
+            // if (i != 0) {
+            //     // render the connection
+            //     GameObject connectionPrefab = Resources.Load<GameObject>("Prefabs/SwcConnection");
+            //     var connectionGameObject = Instantiate(connectionPrefab, this.transform);
+            //     var dir = nodeGameObject.transform.position - lastNode.transform.position;
+            //     var distance = Vector3.Distance(lastNode.transform.position, nodeGameObject.transform.position);
+            //     connectionGameObject.transform.localPosition = lastNode.transform.position + dir / 2;
+            //     connectionGameObject.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir);
+            //     connectionGameObject.transform.localScale = new Vector3(5.0f, distance / 2.0f, 5.0f);
+            // }
+            // lastNode = nodeGameObject;
         }
     }
 
     public List<Vector3> calculateMaxIntensityPath ( List<List<List<float>>> dataArray3D, Vector3 startPos, Vector3 endPos) {
-        return new List<Vector3> { startPos, endPos };
-    }
-
-    public List<List<List<Vector3>>> clipSearchSpace(List<List<List<Vector3>>> searchSpace, Vector3 startPos, Vector3 endPos) {
-        return new List<List<List<Vector3>>> { new List<List<Vector3>> { new List<Vector3> { startPos, endPos } } };
+        PathFinder pathFinder = new PathFinder();
+        List<Vector3Int> path = pathFinder.calculateMaxIntensityPath(dataArray3D, new Vector3Int((int)startPos.x, (int)startPos.y, (int)startPos.z), new Vector3Int((int)endPos.x, (int)endPos.y, (int)endPos.z));
+        var smoothedPath = PathSmoother.SmoothPath(path, 0.5f);
+        List<Vector3> smoothedPathVector3 = new List<Vector3>();
+        foreach (var point in smoothedPath) {
+            smoothedPathVector3.Add(new Vector3(point.position.x, point.position.y, point.position.z));
+        }
+        Debug.Log("[CalculateMaxIntensityPath] pathVector3.Count: " + smoothedPathVector3.Count);
+        return smoothedPathVector3;
     }
 }
