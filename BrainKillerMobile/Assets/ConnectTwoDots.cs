@@ -46,7 +46,6 @@ public class ConnectTwoDots : MonoBehaviour
         }
         GameObject imageObject = mouseClickDetect.getImageGameObject();
         int gap = 5;
-        GameObject lastNode = null;
         for (int i = 0; i < worldPath.Count; i++) {
             if (i != 0 && i != worldPath.Count - 1 && (i % gap != 0)) {
                 continue;
@@ -58,19 +57,6 @@ public class ConnectTwoDots : MonoBehaviour
             nodeGameObject.transform.localScale = Vector3.one;
             nodeGameObject.transform.position = worldPoint;
             nodeGameObject.transform.SetParent(imageObject.transform);
-
-            // generte a line between two nodes
-            // if (i != 0) {
-            //     // render the connection
-            //     GameObject connectionPrefab = Resources.Load<GameObject>("Prefabs/SwcConnection");
-            //     var connectionGameObject = Instantiate(connectionPrefab, this.transform);
-            //     var dir = nodeGameObject.transform.position - lastNode.transform.position;
-            //     var distance = Vector3.Distance(lastNode.transform.position, nodeGameObject.transform.position);
-            //     connectionGameObject.transform.localPosition = lastNode.transform.position + dir / 2;
-            //     connectionGameObject.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir);
-            //     connectionGameObject.transform.localScale = new Vector3(5.0f, distance / 2.0f, 5.0f);
-            // }
-            // lastNode = nodeGameObject;
         }
     }
 

@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public class addMoveAction : MonoBehaviour
+public class MoveGenerator : MonoBehaviour
 {
     UnityAppClientThread clientThread;
     public SWCRender render;
@@ -102,8 +102,32 @@ public class addMoveAction : MonoBehaviour
         return move;
     }
 
-    public void sendRandomAction() {
-        Move move = generateMoveAction2();
-        clientThread.Send(move);
+    public Move generateMove(Vector3 pos, float scale) {
+        int rootID = 10000001;
+        int t = 0;
+        int replica = 255;
+        int childId = childNumber + replica * 100000;
+        string meta = $"x:{pos.x},y:{pos.y},z:{pos.z},r:{scale}";
+        Move m = new Move(t, replica, rootID, childId, meta);
+        childNumber++;
+        return m;
     }
+
+    public void sendMove(Move m) {
+        if (clientThread == null) {
+            clientThread = new UnityAppClientThread(255, "127.0.0.1", 8080);
+            clientThread.Start();
+            System.Threading.Thread.Sleep(100);
+        }
+        clientThread.Send(m);
+    }
+
+    // public void sendRandomAction() {
+    //     if (clientThread == null) {
+    //         clientThread = new UnityAppClientThread(255, "127.0.0.1", 8080);
+    //         clientThread.Start();
+    //     }
+    //     Move move = generateMoveAction2();
+    //     clientThread.Send(move);
+    // }
 }

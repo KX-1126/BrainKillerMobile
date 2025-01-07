@@ -2491,6 +2491,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1651780035}
   - component: {fileID: 1651780038}
+  - component: {fileID: 1651780039}
   m_Layer: 5
   m_Name: SWC
   m_TagString: Untagged
@@ -2530,6 +2531,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa24efedf206c8044bfe70a1af9db022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1651780039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651780034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc70a10abb22db41aacb5cd84c75372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 5
 --- !u!1 &1725920362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3276,6 +3290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetColliderParent: {fileID: 2069660825}
+  swcParent: {fileID: 1651780034}
 --- !u!114 &2069660827
 MonoBehaviour:
   m_ObjectHideFlags: 0

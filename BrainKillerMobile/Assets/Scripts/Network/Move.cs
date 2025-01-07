@@ -11,11 +11,11 @@ public class Move
 
     public Move(long time, long replica, long parent, long child, string meta = "")
     {
-        Time = time;
-        Replica = replica;
-        Parent = parent;
-        Child = child;
-        Meta = meta;
+        Time = time; // 同步需要，显示不需要
+        Replica = replica; // 同步需要，显示不需要
+        Parent = parent; // 都需要
+        Child = child; // 都需要
+        Meta = meta; // 同步不需要，显示需要
     }
 
     public override string ToString()

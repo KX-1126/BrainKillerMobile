@@ -27,7 +27,7 @@ public class SWC
     public int numNodes = 0;
     public List<Node> endNodes = new List<Node>();
     public List<Node> branchNodes = new List<Node>();
-    public Vector3 center;
+    public Vector3 headOrigin;
 
     public int GetRandomIndex()
     {
@@ -89,14 +89,14 @@ public class SWC
             }
         }
         
-        center = new Vector3(head.x, head.y, head.z);
+        headOrigin = new Vector3(head.x, head.y, head.z);
         
         foreach (Node node in nodes)
         {
             // calculate relative position
-            node.relativeX = node.x - center.x;
-            node.relativeY = node.y - center.y;
-            node.relativeZ = node.z - center.z;
+            node.relativeX = node.x - headOrigin.x;
+            node.relativeY = node.y - headOrigin.y;
+            node.relativeZ = node.z - headOrigin.z;
             
             if (node.children.Count > 1)
             {

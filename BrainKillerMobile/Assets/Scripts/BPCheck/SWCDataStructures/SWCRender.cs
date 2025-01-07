@@ -25,7 +25,7 @@ public class SWCRender : MonoBehaviour
         if (timer >= updateInterval) {
             timer = 0f;
             // Call the method to update the SWC
-            // UpdateSwc();
+            UpdateSwc();
         }
     }
 
@@ -46,7 +46,8 @@ public class SWCRender : MonoBehaviour
     public void Render(SWC swc)
     {
         curSwc = swc;
-        // clear the previous rendering
+        // clear the previous rendering 
+        // 优化：不要每次都清空，只新增的节点
         foreach (Transform child in this.transform)
         {
             Destroy(child.gameObject);
@@ -55,7 +56,7 @@ public class SWCRender : MonoBehaviour
         foreach (Node node in swc.indexNodeMap.Values)
         {
             GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
-            GameObject nodeGameObject = Instantiate(nodePrefab,this.transform);
+            GameObject nodeGameObject = Instantiate(nodePrefab,transform);
             if (node.pid == -1)
             {
                 nodeGameObject.name = "Head-" + node.id;
