@@ -8,8 +8,9 @@ public class MoveGenerator : MonoBehaviour
 {
     UnityAppClientThread clientThread;
     public SWCRender render;
-    int childNumber = 0;
-    // Start is called before the first frame update
+    int childNumber = 1;
+    private Queue<Move> sendingQueue = new Queue<Move>();
+
     void Start()
     {
         clientThread = new UnityAppClientThread(255, "127.0.0.1", 8080);
@@ -102,24 +103,50 @@ public class MoveGenerator : MonoBehaviour
         return move;
     }
 
-    public Move generateMove(Vector3 pos, float scale) {
-        int rootID = 10000001;
+    public Move generateMove(Vector3 pos, long pid, float scale) {
+        // int rootID = 10000001;
         int t = 0;
         int replica = 255;
         int childId = childNumber + replica * 100000;
         string meta = $"x:{pos.x},y:{pos.y},z:{pos.z},r:{scale}";
-        Move m = new Move(t, replica, rootID, childId, meta);
+        Move m = new Move(t, replica, pid, childId, meta);
         childNumber++;
         return m;
     }
 
-    public void sendMove(Move m) {
+    public void addToSendingQueue(Move m) {
+        sendingQueue.Enqueue(m);
+    }
+
+    private void sendMove(Move m) {
         if (clientThread == null) {
             clientThread = new UnityAppClientThread(255, "127.0.0.1", 8080);
             clientThread.Start();
             System.Threading.Thread.Sleep(100);
         }
         clientThread.Send(m);
+    }
+
+    private IEnumerator SendQueueContents() {
+        while (true) {
+            for (int i = 0; i < 100; i++) {
+                if (sendingQueue.Count > 0) {
+                    Move move = sendingQueue.Dequeue();
+                    sendMove(move);
+                    yield return new WaitForSeconds(0.05f);
+                } else {
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
+    }
+
+    void OnEnable() {
+        StartCoroutine(SendQueueContents());
+    }
+
+    void OnDisable() {
+        StopCoroutine(SendQueueContents());
     }
 
     // public void sendRandomAction() {

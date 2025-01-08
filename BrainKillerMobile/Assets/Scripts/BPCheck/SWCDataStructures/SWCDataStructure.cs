@@ -28,6 +28,7 @@ public class SWC
     public List<Node> endNodes = new List<Node>();
     public List<Node> branchNodes = new List<Node>();
     public Vector3 headOrigin;
+    public HashSet<int> nodeIDSet = new HashSet<int>();
 
     public int GetRandomIndex()
     {
@@ -46,6 +47,7 @@ public class SWC
     {
         foreach (Node node in nodes)
         {
+            nodeIDSet.Add(node.id);
             if (node.pid == -1)
             {
                 if (head == null)

@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+
+
 
 public class MouseClickDetect : MonoBehaviour
 {
@@ -9,12 +12,32 @@ public class MouseClickDetect : MonoBehaviour
     private CoordinateMapping coordinateMapping = new CoordinateMapping();
     private List<GameObject> addedNodes = new List<GameObject>();
     private List<Vector3> texturePointsHistory = new List<Vector3>();
-    private MoveGenerator moveGenerator = new MoveGenerator();
+    // private MoveGenerator moveGenerator = new MoveGenerator();
+
+    // String SwcNodeColor = "4F9ED9";
+    private List<GameObject> lastTwoClickedNodes = new List<GameObject>();
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            // 检查是否点击到 tag 为 SWCNode 的物体
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+            foreach (RaycastHit hitObj in hits)
+            {
+                Debug.Log("Hit object: " + hitObj.collider.gameObject.name);
+                if (hitObj.collider.gameObject.CompareTag("SWCNode"))
+                {
+                    Debug.Log("Hit SWCNode: " + hitObj.collider.gameObject.name);
+                    GameObject clickedNode = hitObj.collider.gameObject;
+                    appendToLastTwoClickedNodes(clickedNode);
+
+                    return;
+                }
+            }
+            
+            // 如果没有点击到碰撞体，找到图像中的最大强度点
             Collider targetCollider = targetColliderParent.getChildCollider();
             if (targetCollider == null)
             {
@@ -38,7 +61,7 @@ public class MouseClickDetect : MonoBehaviour
 
                 // Debug.Log("Local Ray Direction: " + localRay.direction);
 
-                // 获取局部坐标系下的最大强度点
+                // 获取碰撞体局部坐标系下的最大强度点
                 Vector3 localMaxIntensityPoint = getLocalMaxIntensityPoint(localHitPoint, localRay);
                 texturePointsHistory.Add(localMaxIntensityPoint);
                 // Debug.Log("Local Max Intensity Point: " + localMaxIntensityPoint);
@@ -55,33 +78,26 @@ public class MouseClickDetect : MonoBehaviour
                 addedNodes.Add(maxIntensityNode);
 
                 // 一段时间后移除，只起到提示作用
+                appendToLastTwoClickedNodes(maxIntensityNode);
                 Destroy(maxIntensityNode, 5.0f);
 
                 // 将世界坐标系的点转换成 SWC Parent 坐标系下
                 Vector3 swcParentMaxIntensityPoint = swcParent.transform.InverseTransformPoint(worldMaxIntensityPoint);
 
                 // 转换 gameobject 信息到 move
-                Move newMove = moveGenerator.generateMove(swcParentMaxIntensityPoint, 1.0f);
-                moveGenerator.sendMove(newMove);
+                // Move newMove = moveGenerator.generateMove(swcParentMaxIntensityPoint, 1.0f);
+                // moveGenerator.sendMove(newMove);
             }
         }
     }
 
-    // public Move generateMoveFromGameObject(GameObject nodeGameObject, GameObject ParentGameObject = null)
-    // {
-    //     Vector3 worldMaxIntensityPoint = nodeGameObject.transform.position;
-    //     string moveMeta = $"x:{worldMaxIntensityPoint.x},y:{worldMaxIntensityPoint.y},z:{worldMaxIntensityPoint.z},r:{nodeGameObject.transform.localScale.x}";
-    //     int replica = 255;
-    //     int parentID = 10000001;
-    //     if (ParentGameObject != null)
-    //     {
-    //         parentID = ParentGameObject.GetInstanceID();
-    //         return null;
-    //     }
-    //     int nodeGameObjectID = nodeGameObject.GetInstanceID();
-    //     Move move = new Move(0, replica, parentID, nodeGameObjectID, moveMeta);
-    //     return move;
-    // }
+    private void highlightSelectedNode() {
+        foreach (GameObject nodeObj in lastTwoClickedNodes) {
+            if (nodeObj != null){
+                nodeObj.GetComponent<Renderer>().material.color = Color.red;
+            }
+        }
+    }
 
     public Vector3 getLocalMaxIntensityPoint(Vector3 hitPoint, Ray ray)
     {
@@ -101,5 +117,33 @@ public class MouseClickDetect : MonoBehaviour
     public GameObject getImageGameObject()
     {
         return targetColliderParent.transform.GetChild(0).GetChild(0).gameObject;
+    }
+
+    public void appendToLastTwoClickedNodes(GameObject node)
+    {
+        lastTwoClickedNodes.RemoveAll(node => node == null);
+        if (lastTwoClickedNodes.Count >= 2)
+        {
+            if (lastTwoClickedNodes[0].tag != "SWCNode")
+            {
+                lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = Color.white;
+            } else {
+                lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = new Color(0.30f,0.61f,0.84f);
+            }
+            lastTwoClickedNodes.RemoveAt(0);
+        }
+        if (lastTwoClickedNodes.Count == 0) {
+            lastTwoClickedNodes.Add(node);
+        }
+        
+        if (node != lastTwoClickedNodes[lastTwoClickedNodes.Count - 1]) {
+            lastTwoClickedNodes.Add(node);
+        }
+        highlightSelectedNode();
+    }
+
+    public List<GameObject> getLastTwoClickedNodes()
+    {
+        return lastTwoClickedNodes;
     }
 }

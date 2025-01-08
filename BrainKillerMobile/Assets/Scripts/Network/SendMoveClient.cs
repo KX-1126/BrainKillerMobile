@@ -12,7 +12,7 @@ public class UnityAppClientThread
     private int port;
     private Socket socket;
     private Thread thread;
-    private volatile bool isRunning = false;
+    // private volatile bool isRunning = false;
 
     public UnityAppClientThread(int id, string ip, int port)
     {
@@ -30,7 +30,7 @@ public class UnityAppClientThread
     {
         if (thread == null)
         {
-            isRunning = true;
+            // isRunning = true;
             Debug.Log($"Client {id}: Try to Connecte to {ip}:{port}");
             thread = new Thread(ConnectAndRun);
             thread.IsBackground = true; // Allow the application to exit even if this thread is running
@@ -81,7 +81,7 @@ public class UnityAppClientThread
 
     public void Stop()
     {
-        isRunning = false;
+        // isRunning = false;
         if (socket != null && socket.Connected)
         {
             try

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using BPCheck.SwcIO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SWCRender : MonoBehaviour
@@ -10,6 +11,10 @@ public class SWCRender : MonoBehaviour
     private float updateInterval = 1f;
 
     public SWC curSwc;
+
+    // use a set to record rended node
+    private Dictionary<int, GameObject> renderedNodeGameObjects = new Dictionary<int, GameObject>();
+    private HashSet<string> renderedConnections = new HashSet<string>();
 
     private void Start()
     {
@@ -46,15 +51,21 @@ public class SWCRender : MonoBehaviour
     public void Render(SWC swc)
     {
         curSwc = swc;
-        // clear the previous rendering 
-        // 优化：不要每次都清空，只新增的节点
-        foreach (Transform child in this.transform)
+        // remove existing nodes not in the new swc
+        foreach (var kvp in renderedNodeGameObjects)
         {
-            Destroy(child.gameObject);
+            if (!swc.nodeIDSet.Contains(kvp.Key))
+            {
+                Debug.Log("Destroying node: " + kvp.Key);
+                Destroy(kvp.Value);
+            }
         }
-        // print("Rendering SWC of " + swc.numNodes + " nodes");
         foreach (Node node in swc.indexNodeMap.Values)
         {
+            if (renderedNodeGameObjects.ContainsKey(node.id))
+            {
+                continue;
+            }
             GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
             GameObject nodeGameObject = Instantiate(nodePrefab,transform);
             if (node.pid == -1)
@@ -72,27 +83,36 @@ public class SWCRender : MonoBehaviour
                 nodeGameObject.name = "Node-" + node.id;
             }
             nodeGameObject.transform.localPosition = new Vector3(node.relativeX, node.relativeY, node.relativeZ);
+            nodeGameObject.tag = "SWCNode";
+            renderedNodeGameObjects.Add(node.id, nodeGameObject);
         }
         
         // render the connections
-        foreach (Node node in swc.indexNodeMap.Values)
-        {
-            if (node.children.Count > 0)
-            {
-                foreach (var child in node.children)
-                {
-                    // render the connection
-                    GameObject connectionPrefab = Resources.Load<GameObject>("Prefabs/SwcConnection");
-                    GameObject connectionGameObject = Instantiate(connectionPrefab,this.transform);
-                    Vector3 dir = new Vector3(child.relativeX - node.relativeX, child.relativeY - node.relativeY, child.relativeZ - node.relativeZ);
-                    float distance = Vector3.Distance(new Vector3(node.relativeX, node.relativeY, node.relativeZ), new Vector3(child.relativeX, child.relativeY, child.relativeZ));
-                    connectionGameObject.transform.localPosition = new Vector3(node.relativeX, node.relativeY, node.relativeZ) + dir / 2;
-                    connectionGameObject.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir);
-                    connectionGameObject.transform.localScale = new Vector3(5.0f, distance/2.0f, 5.0f);
-                }
-            }
-        }
-        
-        // print("Rendering SWC finished");
+        // foreach (Node node in swc.indexNodeMap.Values)
+        // {
+        //     if (node.children.Count > 0)
+        //     {
+        //         foreach (var child in node.children)
+        //         {
+        //             string connectionKey = node.id + "-" + child.id;
+        //             if (renderedConnections.Contains(connectionKey))
+        //             {
+        //                 continue;
+        //             } else
+        //             {
+        //                 renderedConnections.Add(connectionKey);
+        //             }
+        //             // render the connection
+        //             GameObject connectionPrefab = Resources.Load<GameObject>("Prefabs/SwcConnection");
+        //             GameObject connectionGameObject = Instantiate(connectionPrefab,this.transform);
+        //             Vector3 dir = new Vector3(child.relativeX - node.relativeX, child.relativeY - node.relativeY, child.relativeZ - node.relativeZ);
+        //             float distance = Vector3.Distance(new Vector3(node.relativeX, node.relativeY, node.relativeZ), new Vector3(child.relativeX, child.relativeY, child.relativeZ));
+        //             connectionGameObject.transform.localPosition = new Vector3(node.relativeX, node.relativeY, node.relativeZ) + dir / 2;
+        //             connectionGameObject.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir);
+        //             connectionGameObject.transform.localScale = new Vector3(5.0f, distance/2.0f, 5.0f);
+        //             connectionGameObject.tag = "SWCConnection";
+        //         }
+        //     }
+        // }
     }
 }
