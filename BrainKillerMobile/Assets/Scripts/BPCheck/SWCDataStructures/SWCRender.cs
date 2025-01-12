@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using BPCheck.SwcIO;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,18 +12,20 @@ public class SWCRender : MonoBehaviour
     private float updateInterval = 1f;
 
     public SWC curSwc;
-
+    string swcFilePath;
     // use a set to record rended node
     private Dictionary<int, GameObject> renderedNodeGameObjects = new Dictionary<int, GameObject>();
     private HashSet<string> renderedConnections = new HashSet<string>();
 
     private void Start()
     {
-        // string testSWCPath = "Assets/Resources/GamesAssets/test2.swc";
-        // SWC swc = new SWC();
-        // swc.buildTree(SWCDataStructure.loadSWCFromLocalFile(testSWCPath));
-        // Render(swc);
-
+        DataManager dataManager = DataManager.Instance;
+        string swcFileName = $"tree_{dataManager.userId}.swc";
+        print("swcFileName: " + swcFileName);
+        string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
+        print("exePath: " + exePath);
+        swcFilePath = Path.Combine(exePath, swcFileName);
+        print("swcFilePath: " + swcFilePath);
     }
 
     private void Update() {
@@ -38,7 +41,7 @@ public class SWCRender : MonoBehaviour
         // Logic to update the SWC
         // This could involve re-reading the SWC file and re-rendering
         SwcFileReader swcFileReader = new SwcFileReader();
-        string swcText = swcFileReader.readSwcFile("F:\\Repos\\Tree_CRDT\\tree_255.swc");
+        string swcText = swcFileReader.readSwcFile(swcFilePath);
         if (swcText == "") {
             print("SWC file read failed");
             return;

@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class MoveGenerator : MonoBehaviour
@@ -10,17 +8,21 @@ public class MoveGenerator : MonoBehaviour
     public SWCRender render;
     int childNumber = 1;
     private Queue<Move> sendingQueue = new Queue<Move>();
+    int replicaId = 0;
 
     void Start()
     {
-        clientThread = new UnityAppClientThread(255, "127.0.0.1", 8080);
+        DataManager dataManager = DataManager.Instance;
+        replicaId = dataManager.userId;
+        clientThread = new UnityAppClientThread(replicaId, "127.0.0.1", 8080);
         clientThread.Start();
+        
     }
 
     Move generateMoveAction() {
         int rootID = 10000001;
         int t = 0;
-        int replica = 255;
+        int replica = replicaId;
         int x = Random.Range(-20, 20);
         int y = Random.Range(-20, 20);
         int z = Random.Range(-20, 20);
@@ -106,7 +108,7 @@ public class MoveGenerator : MonoBehaviour
     public Move generateMove(Vector3 pos, long pid, float scale) {
         // int rootID = 10000001;
         int t = 0;
-        int replica = 255;
+        int replica = replicaId;
         int childId = childNumber + replica * 100000;
         string meta = $"x:{pos.x},y:{pos.y},z:{pos.z},r:{scale}";
         Move m = new Move(t, replica, pid, childId, meta);
@@ -120,7 +122,7 @@ public class MoveGenerator : MonoBehaviour
 
     private void sendMove(Move m) {
         if (clientThread == null) {
-            clientThread = new UnityAppClientThread(255, "127.0.0.1", 8080);
+            clientThread = new UnityAppClientThread(replicaId, "127.0.0.1", 8080);
             clientThread.Start();
             System.Threading.Thread.Sleep(100);
         }
@@ -129,14 +131,12 @@ public class MoveGenerator : MonoBehaviour
 
     private IEnumerator SendQueueContents() {
         while (true) {
-            for (int i = 0; i < 100; i++) {
-                if (sendingQueue.Count > 0) {
-                    Move move = sendingQueue.Dequeue();
-                    sendMove(move);
-                    yield return new WaitForSeconds(0.05f);
-                } else {
-                    yield return new WaitForSeconds(0.1f);
-                }
+            if (sendingQueue.Count > 0) {
+                Move move = sendingQueue.Dequeue();
+                sendMove(move);
+                yield return new WaitForSeconds(0.2f);
+            } else {
+                yield return new WaitForSeconds(0.5f);
             }
         }
     }

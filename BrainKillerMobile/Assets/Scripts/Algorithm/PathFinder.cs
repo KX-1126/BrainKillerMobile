@@ -49,7 +49,8 @@ public class PathFinder
 
         costs[startPos] = 0;
         priorityQueue.Enqueue(startPos, 0);
-        
+        Vector3 startToEndDirection = Vector3.Normalize(endPos - startPos);
+
         // 3. Dijkstra 算法核心
         while (priorityQueue.Count > 0)
         {
@@ -106,7 +107,7 @@ public class PathFinder
                     {
                         costs[neighborPos] = float.MaxValue;
                     }
-                    float newCost = (float)GetCost(currentPos, neighborPos, dataArray3D);
+                    float newCost = (float)GetCost(currentPos, neighborPos, dataArray3D, startToEndDirection);
                     // Debug.Log("newCost for " + neighborPos + ": " + newCost);
                     if (newCost < costs[neighborPos])
                     {
@@ -173,7 +174,6 @@ public class PathFinder
         }
         Debug.Log("find path: " + pathLine);
 
-
         Debug.Log($"Final memory usage: {GetMemoryUsage()}");
         return path;
     }
@@ -183,7 +183,7 @@ public class PathFinder
         return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height && pos.z >= 0 && pos.z < depth;
     }
 
-    private double GetCost(Vector3Int pos1, Vector3Int pos2, List<List<List<float>>> dataArray3D)
+    private double GetCost(Vector3Int pos1, Vector3Int pos2, List<List<List<float>>> dataArray3D, Vector3 startToEndDirection)
     {
         float lambuda = 10.0f;
         float nomolizedIntensity1 = dataArray3D[pos1.x][pos1.y][pos1.z] / 255.0f;
@@ -193,7 +193,22 @@ public class PathFinder
         double g2 = lambuda * Math.Pow(1 - nomolizedIntensity2, 2);
         g2 = Math.Exp(g2);
         double euclideanDistance = Math.Sqrt(Math.Pow(pos1.x - pos2.x, 2) + Math.Pow(pos1.y - pos2.y, 2) + Math.Pow(pos1.z - pos2.z, 2));
-        return euclideanDistance * (g1 + g2) / 2;
+        double cost = euclideanDistance * (g1 + g2) / 2;
+        // 根据方向性调整 cost
+        Vector3 direction = new Vector3(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z);
+        direction.Normalize();
+        float angle = Vector3.Angle(direction, startToEndDirection);
+        cost *= aStarCostMultiplier(angle);
+        
+        return cost;
+    }
+
+    private float aStarCostMultiplier(float angle) {
+        if (angle < 45) {
+            return 1.0f;
+        } else {
+            return 1.0f + (angle - 45) / 135;
+        }
     }
 }
 

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using DataLoader;
-using UnityEditor.UI;
 using UnityEngine;
 
 public class testVolumeGeneration : MonoBehaviour
@@ -11,7 +10,7 @@ public class testVolumeGeneration : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string testImagePath = "Assets/Resources/GamesAssets/test2.v3draw";
+        string testImagePath = System.IO.Path.Combine(Application.streamingAssetsPath, "test2.v3draw");        
         Dataset3D dataset = V3dRawDataLoader.readV3dRawFromLocalFile(testImagePath);
         this.dataset = dataset;
         

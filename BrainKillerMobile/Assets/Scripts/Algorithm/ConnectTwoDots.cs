@@ -104,12 +104,8 @@ public class ConnectTwoDots : MonoBehaviour
     public List<Vector3> calculateMaxIntensityPath ( List<List<List<float>>> dataArray3D, Vector3 startPos, Vector3 endPos) {
         PathFinder pathFinder = new PathFinder();
         List<Vector3Int> path = pathFinder.calculateMaxIntensityPath(dataArray3D, new Vector3Int((int)startPos.x, (int)startPos.y, (int)startPos.z), new Vector3Int((int)endPos.x, (int)endPos.y, (int)endPos.z));
-        var smoothedPath = PathSmoother.SmoothPath(path, 0.5f);
-        List<Vector3> smoothedPathVector3 = new List<Vector3>();
-        foreach (var point in smoothedPath) {
-            smoothedPathVector3.Add(new Vector3(point.position.x, point.position.y, point.position.z));
-        }
-        Debug.Log("[CalculateMaxIntensityPath] pathVector3.Count: " + smoothedPathVector3.Count);
-        return smoothedPathVector3;
+        var smoothedPath = PathSmoother.SmoothPathByWindow(path, 5);
+        Debug.Log("[CalculateMaxIntensityPath] pathVector3.Count: " + smoothedPath.Count);
+        return smoothedPath;
     }
 }

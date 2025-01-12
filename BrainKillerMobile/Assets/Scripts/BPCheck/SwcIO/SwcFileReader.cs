@@ -15,7 +15,7 @@ namespace BPCheck.SwcIO
 
         public string readSwcFile(string path)
         {
-            string mmapSwcPath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+            string mmapSwcPath = path;
             int fileSize = 10 * 1024 * 1024;
             for (int i = 0; i < MAX_RETRIES; i++)
             {

@@ -16,6 +16,65 @@ public class PathSmoother
         }
     }
 
+    public static List<Vector3> SmoothPathByWindow(List<Vector3Int> originalPath, int windowSize = 5)
+    {
+        if (windowSize < 2)
+        {
+            return originalPath.ConvertAll(v => (Vector3)v); // 直接返回原始线条
+        }
+
+        int length = originalPath.Count;
+        int halfWindowSize = windowSize / 2;
+
+        List<Vector3> smoothedLine = new List<Vector3>(originalPath.Count);
+        foreach (var point in originalPath)
+        {
+            smoothedLine.Add(point); // 初始化 smoothedLine
+        }
+
+        for (int i = 1; i < length - 1; i++)
+        {
+            List<Vector3> winC = new List<Vector3>();
+            List<float> winW = new List<float>();
+
+            // 添加中心点及其权重
+            winC.Add(originalPath[i]);
+            winW.Add(1.0f + halfWindowSize);
+
+            // 添加左右相邻的点及其权重
+            for (int j = 1; j <= halfWindowSize; j++)
+            {
+                if (i - j >= 0)
+                {
+                    winC.Add(originalPath[i - j]);
+                    winW.Add(1.0f);
+                }
+                if (i + j < length)
+                {
+                    winC.Add(originalPath[i + j]);
+                    winW.Add(1.0f);
+                }
+            }
+
+            float x = 0f;
+            float y = 0f;
+            float z = 0f;
+            float s = 0f;
+
+            for (int k = 0; k < winW.Count; k++)
+            {
+                x += winW[k] * winC[k].x;
+                y += winW[k] * winC[k].y;
+                z += winW[k] * winC[k].z;
+                s += winW[k];
+            }
+
+            smoothedLine[i] = new Vector3(x / s, y / s, z / s);
+        }
+
+        return smoothedLine;
+    }
+
     public static List<SmoothedPathPoint> SmoothPath(List<Vector3Int> originalPath, float pointSpacing = 0.5f)
     {
         var smoothedPath = new List<SmoothedPathPoint>();
