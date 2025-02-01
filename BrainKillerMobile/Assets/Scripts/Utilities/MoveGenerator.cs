@@ -105,12 +105,12 @@ public class MoveGenerator : MonoBehaviour
         return move;
     }
 
-    public Move generateMove(Vector3 pos, long pid, float scale) {
+    public Move generateMove(Vector3 pos, int pid, float scale) {
         // int rootID = 10000001;
         int t = 0;
         int replica = replicaId;
         int childId = childNumber + replica * 100000;
-        string meta = $"x:{pos.x},y:{pos.y},z:{pos.z},r:{scale}";
+        string meta = $"x:{pos.x:F2},y:{pos.y:F2},z:{pos.z:F2},r:{scale}";
         Move m = new Move(t, replica, pid, childId, meta);
         childNumber++;
         return m;
@@ -134,9 +134,9 @@ public class MoveGenerator : MonoBehaviour
             if (sendingQueue.Count > 0) {
                 Move move = sendingQueue.Dequeue();
                 sendMove(move);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.001f);
             } else {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.2f);
             }
         }
     }

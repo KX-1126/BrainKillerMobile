@@ -88,7 +88,7 @@ public class ConnectTwoDots : MonoBehaviour
             Vector3 worldPoint = imageObject.transform.TransformPoint(worldPath[i]);
             Vector3 swcParentLocalPoint = swcParent.transform.InverseTransformPoint(worldPoint);
             
-            Move newMove = moveGenerator.generateMove(swcParentLocalPoint, prevIndex,  1.0f);
+            Move newMove = moveGenerator.generateMove(swcParentLocalPoint, (int)prevIndex,  1.0f);
             prevIndex = newMove.Child;
             moveGenerator.addToSendingQueue(newMove);
 

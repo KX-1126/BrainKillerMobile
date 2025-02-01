@@ -19,13 +19,15 @@ public class SWCRender : MonoBehaviour
 
     private void Start()
     {
-        DataManager dataManager = DataManager.Instance;
-        string swcFileName = $"tree_{dataManager.userId}.swc";
-        print("swcFileName: " + swcFileName);
-        string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
-        print("exePath: " + exePath);
-        swcFilePath = Path.Combine(exePath, swcFileName);
-        print("swcFilePath: " + swcFilePath);
+        // DataManager dataManager = DataManager.Instance;
+        // string swcFileName = $"tree_{dataManager.userId}.swc";
+        // print("swcFileName: " + swcFileName);
+        // string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
+        // print("exePath: " + exePath);
+        // swcFilePath = Path.Combine(exePath, swcFileName);
+        // print("swcFilePath: " + swcFilePath);
+
+        swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
     }
 
     private void Update() {

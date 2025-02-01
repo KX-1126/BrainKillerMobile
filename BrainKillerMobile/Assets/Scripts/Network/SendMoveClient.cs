@@ -69,6 +69,7 @@ public class UnityAppClientThread
         try
         {
             byte[] encodedMove = MoveEncoder.EncodeMove(move);
+            // 添加标识分隔符
             Debug.Log($"Client {id}: Sending Move: {move}, encoded size: {encodedMove.Length}");
             socket.Send(encodedMove);
         }
