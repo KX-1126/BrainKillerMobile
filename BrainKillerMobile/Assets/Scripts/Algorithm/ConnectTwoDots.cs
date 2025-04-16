@@ -107,5 +107,15 @@ public class ConnectTwoDots : MonoBehaviour
         var smoothedPath = PathSmoother.SmoothPathByWindow(path, 5);
         Debug.Log("[CalculateMaxIntensityPath] pathVector3.Count: " + smoothedPath.Count);
         return smoothedPath;
+
+        // Convert Vector3Int path to Vector3 path
+        // List<Vector3> pathVector3 = new List<Vector3>();
+        // foreach (Vector3Int point in path)
+        // {
+        //     pathVector3.Add(new Vector3(point.x, point.y, point.z));
+        // }
+        
+        // Debug.Log("[CalculateMaxIntensityPath] pathVector3.Count: " + pathVector3.Count);
+        // return smoothedPath;
     }
 }

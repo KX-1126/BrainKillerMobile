@@ -119,6 +119,23 @@ public class MouseClickDetect : MonoBehaviour
         return targetColliderParent.transform.GetChild(0).GetChild(0).gameObject;
     }
 
+    public Color getColorForId(int id) {
+        // 定义一组低饱和度的颜色 (RGB值在0-1范围内)
+        Color[] colors = new Color[] {
+            new Color(1f/255f, 125f/255f, 232f/255f), 
+            new Color(254f/255f, 205f/255f, 42f/255f), 
+            new Color(24f/255f, 176f/255f, 93f/255f) 
+        };
+        
+        // 获取ID的首位数字
+        int firstDigit = id;
+        while (firstDigit >= 10) {
+            firstDigit /= 10;
+        }
+        firstDigit = firstDigit % 3;
+        return colors[firstDigit];
+    }
+
     public void appendToLastTwoClickedNodes(GameObject node)
     {
         lastTwoClickedNodes.RemoveAll(node => node == null);
@@ -128,7 +145,7 @@ public class MouseClickDetect : MonoBehaviour
             {
                 lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = Color.white;
             } else {
-                lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = new Color(0.30f,0.61f,0.84f);
+                lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = getColorForId(DataManager.Instance.userId);
             }
             lastTwoClickedNodes.RemoveAt(0);
         }

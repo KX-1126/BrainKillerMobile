@@ -23,6 +23,7 @@ namespace DataLoader
             // Texture2D noiseTexture = NoiseTextureGenerator.GenerateNoiseTexture(noiseDimX, noiseDimY);
 
             Texture3D texture3D = dataset.getTextureData();
+            Debug.Log("Texture3D filterMode: " + texture3D.filterMode);
             if (texture3D == null)
             {
                 Debug.LogError("Get texture3D failed");

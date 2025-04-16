@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using BPCheck.SwcIO;
 using Unity.VisualScripting;
@@ -17,17 +18,22 @@ public class SWCRender : MonoBehaviour
     private Dictionary<int, GameObject> renderedNodeGameObjects = new Dictionary<int, GameObject>();
     private HashSet<string> renderedConnections = new HashSet<string>();
 
+    private List<int> collaborators = new List<int>();
+
+    public addUserRow addUserRowFunc;
+
     private void Start()
     {
-        // DataManager dataManager = DataManager.Instance;
-        // string swcFileName = $"tree_{dataManager.userId}.swc";
-        // print("swcFileName: " + swcFileName);
-        // string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
-        // print("exePath: " + exePath);
+        DataManager dataManager = DataManager.Instance;
+        string swcFileName = $"tree_{dataManager.userId}.swc";
+        print("swcFileName: " + swcFileName);
+        string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
+        print("exePath: " + exePath);
         // swcFilePath = Path.Combine(exePath, swcFileName);
         // print("swcFilePath: " + swcFilePath);
-
         swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+
+        // addUserRowFunc.addRow(DataManager.Instance.userId.ToString() + "(You)", getColorForId(DataManager.Instance.userId));
     }
 
     private void Update() {
@@ -44,6 +50,8 @@ public class SWCRender : MonoBehaviour
         // This could involve re-reading the SWC file and re-rendering
         SwcFileReader swcFileReader = new SwcFileReader();
         string swcText = swcFileReader.readSwcFile(swcFilePath);
+        // string swcText = File.ReadAllText(swcFilePath);
+
         if (swcText == "") {
             print("SWC file read failed");
             return;
@@ -51,6 +59,43 @@ public class SWCRender : MonoBehaviour
         SWC swc = new SWC();
         swc.buildTree(SWCDataStructure.loadSWC(swcText));
         Render(swc);
+    }
+
+    public Color getColorForId(int id) {
+        // 定义一组低饱和度的颜色 (RGB值在0-1范围内)
+        Color[] colors = new Color[] {
+            new Color(1f/255f, 125f/255f, 232f/255f), 
+            new Color(254f/255f, 205f/255f, 42f/255f), 
+            new Color(24f/255f, 176f/255f, 93f/255f) 
+        };
+        
+        // 获取ID的首位数字
+        int firstDigit = id;
+        while (firstDigit >= 10) {
+            firstDigit /= 10;
+        }
+        firstDigit = firstDigit % 3;
+        return colors[firstDigit];
+    }
+
+    private void addCollaborator(int nodeId) {
+        string id = nodeId.ToString();
+        // find first zero in id,cut the string from 0 to the first zero
+        int firstZeroIndex = id.IndexOf('0');
+        if (firstZeroIndex != -1)
+        {
+            id = id.Substring(0, firstZeroIndex);
+        }
+        int collaboratorId = int.Parse(id);
+        if (collaboratorId == 1) 
+        {
+            return;
+        }
+        if (!collaborators.Contains(collaboratorId))
+        {
+            collaborators.Add(collaboratorId);
+            addUserRowFunc.addRow(collaboratorId.ToString(), getColorForId(collaboratorId));
+        }
     }
 
     public void Render(SWC swc)
@@ -73,6 +118,8 @@ public class SWCRender : MonoBehaviour
             }
             GameObject nodePrefab = Resources.Load<GameObject>("Prefabs/SwcNode");
             GameObject nodeGameObject = Instantiate(nodePrefab,transform);
+            nodeGameObject.GetComponent<Renderer>().material.color = getColorForId(node.id);
+            addCollaborator(node.id);
             if (node.pid == -1)
             {
                 nodeGameObject.name = "Head-" + node.id;
@@ -120,4 +167,5 @@ public class SWCRender : MonoBehaviour
         //     }
         // }
     }
+
 }
