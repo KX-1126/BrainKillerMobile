@@ -15,6 +15,8 @@ public class ConnectTwoDots : MonoBehaviour
     public testVolumeGeneration imageParent;
     public MoveGenerator moveGenerator;
 
+    public static Dictionary<int, Vector3> swcNodeTexturePos = new Dictionary<int, Vector3>();
+
     private GameObject currentPathHead;
 
     public void connectLastTwoDots() {
@@ -89,6 +91,10 @@ public class ConnectTwoDots : MonoBehaviour
             Vector3 swcParentLocalPoint = swcParent.transform.InverseTransformPoint(worldPoint);
             
             Move newMove = moveGenerator.generateMove(swcParentLocalPoint, (int)prevIndex,  1.0f);
+
+            swcNodeTexturePos[newMove.Child] = path[i];
+            Debug.Log("[ConnectTwoDots] newMove.Child: " + newMove.Child + " pos " + swcNodeTexturePos[newMove.Child]);
+
             prevIndex = newMove.Child;
             moveGenerator.addToSendingQueue(newMove);
 

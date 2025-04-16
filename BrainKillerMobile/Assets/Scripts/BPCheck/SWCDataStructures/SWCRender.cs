@@ -29,9 +29,9 @@ public class SWCRender : MonoBehaviour
         print("swcFileName: " + swcFileName);
         string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
         print("exePath: " + exePath);
-        // swcFilePath = Path.Combine(exePath, swcFileName);
-        // print("swcFilePath: " + swcFilePath);
-        swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+        swcFilePath = Path.Combine(exePath, swcFileName);
+        // // print("swcFilePath: " + swcFilePath);
+        // swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
 
         // addUserRowFunc.addRow(DataManager.Instance.userId.ToString() + "(You)", getColorForId(DataManager.Instance.userId));
     }

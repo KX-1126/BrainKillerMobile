@@ -64,11 +64,11 @@ public class MouseClickDetect : MonoBehaviour
                 // 获取碰撞体局部坐标系下的最大强度点
                 Vector3 localMaxIntensityPoint = getLocalMaxIntensityPoint(localHitPoint, localRay);
                 texturePointsHistory.Add(localMaxIntensityPoint);
-                // Debug.Log("Local Max Intensity Point: " + localMaxIntensityPoint);
+                Debug.Log("Local Max Intensity Point: " + localMaxIntensityPoint);
 
                 // 将局部坐标系下的最大强度点转换为世界坐标系
                 Vector3 worldMaxIntensityPoint = hit.collider.transform.TransformPoint(localMaxIntensityPoint);
-                // Debug.Log("World Max Intensity Point: " + worldMaxIntensityPoint);
+                Debug.Log("World Max Intensity Point: " + worldMaxIntensityPoint);
 
                 // 在世界坐标系下创建最大强度点 不直接生成，发送消息
                 GameObject maxIntensityNode = Instantiate(nodePrefab);
