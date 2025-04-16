@@ -71,7 +71,7 @@ public class ConnectTwoDots : MonoBehaviour
             worldPath.Add(coordinateMapping.texturePoint2RayPoint(path[i], dataset));
         }
         GameObject imageObject = mouseClickDetect.getImageGameObject();
-        int gap = 4;
+        int gap = 3;
 
         string headName = currentPathHead.name;
         string[] headNameArray = headName.Split('-');
@@ -117,5 +117,14 @@ public class ConnectTwoDots : MonoBehaviour
         
         // Debug.Log("[CalculateMaxIntensityPath] pathVector3.Count: " + pathVector3.Count);
         // return smoothedPath;
+    }
+
+
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.C))
+        {
+            connectLastTwoDots();
+        }
     }
 }

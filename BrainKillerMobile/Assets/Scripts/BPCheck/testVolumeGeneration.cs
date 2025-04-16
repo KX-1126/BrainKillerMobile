@@ -37,7 +37,7 @@ public class testVolumeGeneration : MonoBehaviour
 
         // load new image
         
-        dataset = V3dRawDataLoader.readV3dRawFromLocalFile(path);
+        this.dataset = V3dRawDataLoader.readV3dRawFromLocalFile(path);
         
         GameObject volumeObject = VolumeObjectFactory.createVolumeObject(dataset);
         

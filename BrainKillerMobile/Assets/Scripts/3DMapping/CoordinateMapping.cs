@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using DataLoader;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CoordinateMapping
 {
+    private String datasetName;
     public List<List<List<float>>> dataArray3D = null;
 
     public Vector3 calculateMaxIntensityPoint(Dataset3D dataset, Vector3 start, Ray ray, int numPoints)
@@ -93,8 +96,9 @@ public class CoordinateMapping
 
     public void fillDataArrayIfNeeded(Dataset3D dataset)
     {
-        if (dataArray3D == null)
+        if (dataArray3D == null || dataset.datasetName != this.datasetName)
         {
+            datasetName = dataset.datasetName;
             dataArray3D = new List<List<List<float>>>();
             for (int i = 0; i < dataset.dimX; i++)
             {

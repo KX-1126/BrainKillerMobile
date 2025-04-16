@@ -63,7 +63,7 @@ namespace DataLoader
             print("max value " + maxValue + " min value " + minValue);
 
             Dataset3D newDateset = new Dataset3D();
-            newDateset.datasetName = "testImage";
+            newDateset.datasetName = System.Guid.NewGuid().ToString();
             newDateset.data = rawImageData;
             newDateset.dimX = dimX;
             newDateset.dimY = dimY;

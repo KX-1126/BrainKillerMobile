@@ -56,4 +56,17 @@ public class imageSelectorDropDown : MonoBehaviour
             Debug.LogError("Volume generator is not assigned.");
         }
     }
+
+    public int getCurrentImageName()
+    {
+        int GetImgNumber(string filename)
+        {
+            var name = System.IO.Path.GetFileNameWithoutExtension(filename);
+            var match = System.Text.RegularExpressions.Regex.Match(name, @"img(\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (match.Success && int.TryParse(match.Groups[1].Value, out int num))
+            return num;
+            return -1;
+        }
+        return GetImgNumber(imageNames[imageSelector.value]);
+    }
 }
