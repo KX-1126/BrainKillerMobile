@@ -33,9 +33,9 @@ public class SWCRender : MonoBehaviour
         print("swcFileName: " + swcFileName);
         string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
         print("exePath: " + exePath);
-        // swcFilePath = Path.Combine(exePath, swcFileName);
+        swcFilePath = Path.Combine(exePath, swcFileName);
         // // print("swcFilePath: " + swcFilePath);
-        swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+        // swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
 
         // addUserRowFunc.addRow(DataManager.Instance.userId.ToString() + "(You)", getColorForId(DataManager.Instance.userId));
     }
@@ -158,6 +158,8 @@ public class SWCRender : MonoBehaviour
             GameObject lastNode = renderedNodeGameObjects[ConnectTwoDots.lastTracedNodeId];
             detector.appendToLastTwoClickedNodes(lastNode);
             Debug.Log("Auto select last node: " + ConnectTwoDots.lastTracedNodeId);
+            // 清空 last id
+            ConnectTwoDots.lastTracedNodeId = -1;
         }
     }
 

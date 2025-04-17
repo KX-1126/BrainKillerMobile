@@ -13,7 +13,7 @@ public class testVolumeGeneration : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string testImagePath = System.IO.Path.Combine(Application.streamingAssetsPath, "test2.v3draw");        
+        string testImagePath = System.IO.Path.Combine(Application.streamingAssetsPath, "Img0_X_1443.62_Y_8698.13_Z_3595.19.v3draw");        
         Dataset3D dataset = V3dRawDataLoader.readV3dRawFromLocalFile(testImagePath);
         this.dataset = dataset;
         

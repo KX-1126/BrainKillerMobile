@@ -132,7 +132,7 @@ public class ConnectTwoDots : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             connectLastTwoDots();
         }
