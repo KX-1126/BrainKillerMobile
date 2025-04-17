@@ -10,9 +10,11 @@ using UnityEngine;
 public class SWCRender : MonoBehaviour
 {
     private float timer = 0f;
-    private float updateInterval = 1f;
+    private float updateInterval = 0.1f;
 
     public SWC curSwc;
+
+    public String curSwcText = "";
     string swcFilePath;
     // use a set to record rended node
     private Dictionary<int, GameObject> renderedNodeGameObjects = new Dictionary<int, GameObject>();
@@ -22,6 +24,8 @@ public class SWCRender : MonoBehaviour
 
     public addUserRow addUserRowFunc;
 
+    public MouseClickDetect detector;
+
     private void Start()
     {
         DataManager dataManager = DataManager.Instance;
@@ -29,9 +33,9 @@ public class SWCRender : MonoBehaviour
         print("swcFileName: " + swcFileName);
         string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
         print("exePath: " + exePath);
-        swcFilePath = Path.Combine(exePath, swcFileName);
+        // swcFilePath = Path.Combine(exePath, swcFileName);
         // // print("swcFilePath: " + swcFilePath);
-        // swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+        swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
 
         // addUserRowFunc.addRow(DataManager.Instance.userId.ToString() + "(You)", getColorForId(DataManager.Instance.userId));
     }
@@ -56,6 +60,15 @@ public class SWCRender : MonoBehaviour
             print("SWC file read failed");
             return;
         }
+
+        // 优化大字符串比较，先比较长度，再用Equals避免分配
+        if (swcText.Length == curSwcText.Length && swcText.Equals(curSwcText, StringComparison.Ordinal)) {
+            // No changes in the SWC file, no need to update
+            return;
+        }
+
+        curSwcText = swcText;
+
         SWC swc = new SWC();
         swc.buildTree(SWCDataStructure.loadSWC(swcText));
         Render(swc);
@@ -138,34 +151,14 @@ public class SWCRender : MonoBehaviour
             nodeGameObject.tag = "SWCNode";
             renderedNodeGameObjects.Add(node.id, nodeGameObject);
         }
-        
-        // render the connections
-        // foreach (Node node in swc.indexNodeMap.Values)
-        // {
-        //     if (node.children.Count > 0)
-        //     {
-        //         foreach (var child in node.children)
-        //         {
-        //             string connectionKey = node.id + "-" + child.id;
-        //             if (renderedConnections.Contains(connectionKey))
-        //             {
-        //                 continue;
-        //             } else
-        //             {
-        //                 renderedConnections.Add(connectionKey);
-        //             }
-        //             // render the connection
-        //             GameObject connectionPrefab = Resources.Load<GameObject>("Prefabs/SwcConnection");
-        //             GameObject connectionGameObject = Instantiate(connectionPrefab,this.transform);
-        //             Vector3 dir = new Vector3(child.relativeX - node.relativeX, child.relativeY - node.relativeY, child.relativeZ - node.relativeZ);
-        //             float distance = Vector3.Distance(new Vector3(node.relativeX, node.relativeY, node.relativeZ), new Vector3(child.relativeX, child.relativeY, child.relativeZ));
-        //             connectionGameObject.transform.localPosition = new Vector3(node.relativeX, node.relativeY, node.relativeZ) + dir / 2;
-        //             connectionGameObject.transform.localRotation = Quaternion.FromToRotation(Vector3.up, dir);
-        //             connectionGameObject.transform.localScale = new Vector3(5.0f, distance/2.0f, 5.0f);
-        //             connectionGameObject.tag = "SWCConnection";
-        //         }
-        //     }
-        // }
+
+        // 自动选中上一次连线的末尾节点
+        if (ConnectTwoDots.lastTracedNodeId != -1 && renderedNodeGameObjects.ContainsKey(ConnectTwoDots.lastTracedNodeId))
+        {
+            GameObject lastNode = renderedNodeGameObjects[ConnectTwoDots.lastTracedNodeId];
+            detector.appendToLastTwoClickedNodes(lastNode);
+            Debug.Log("Auto select last node: " + ConnectTwoDots.lastTracedNodeId);
+        }
     }
 
 }

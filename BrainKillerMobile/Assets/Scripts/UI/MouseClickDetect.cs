@@ -143,7 +143,8 @@ public class MouseClickDetect : MonoBehaviour
         {
             if (lastTwoClickedNodes[0].tag != "SWCNode")
             {
-                lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = Color.white;
+                // lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = Color.white;
+                Destroy(lastTwoClickedNodes[0]);
             } else {
                 lastTwoClickedNodes[0].GetComponent<Renderer>().material.color = getColorForId(DataManager.Instance.userId);
             }

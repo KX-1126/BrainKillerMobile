@@ -19,6 +19,8 @@ public class ConnectTwoDots : MonoBehaviour
 
     private GameObject currentPathHead;
 
+    public static int lastTracedNodeId = -1;
+
     public void connectLastTwoDots() {
         List<Vector3> dots = fetchLastTwoDots();
         if (dots == null || dots.Count < 2) {
@@ -35,7 +37,7 @@ public class ConnectTwoDots : MonoBehaviour
             return null;
         }
         if (lastTwoClickedNodes[0].tag != "SWCNode" ) {
-            Debug.LogWarning("[fetch last two dots] The first clicked node should be SWCNode");
+            Debug.LogWarning("[fetch last two dots] The first clicked node should be SWCNode, but get tag: " + lastTwoClickedNodes[0].tag);
             return null;
         } 
         
@@ -91,6 +93,8 @@ public class ConnectTwoDots : MonoBehaviour
             Vector3 swcParentLocalPoint = swcParent.transform.InverseTransformPoint(worldPoint);
             
             Move newMove = moveGenerator.generateMove(swcParentLocalPoint, (int)prevIndex,  1.0f);
+
+            lastTracedNodeId = newMove.Child;
 
             swcNodeTexturePos[newMove.Child] = path[i];
             Debug.Log("[ConnectTwoDots] newMove.Child: " + newMove.Child + " pos " + swcNodeTexturePos[newMove.Child]);
