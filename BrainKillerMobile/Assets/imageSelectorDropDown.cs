@@ -46,6 +46,7 @@ public class imageSelectorDropDown : MonoBehaviour
     
     private void loadImage(string imageName){
         Debug.Log("Loading image: " + imageName);
+        ConnectTwoDots.swcNodeTexturePos.Clear(); // 切换图像的时候清空上次的纹理坐标
         string path = System.IO.Path.Combine(Application.streamingAssetsPath, imageName);
         if (volumeGenerator != null)
         {

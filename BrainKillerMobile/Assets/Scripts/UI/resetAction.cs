@@ -10,6 +10,8 @@ public class resetAction : MonoBehaviour
 
     public SWCRender swcRender;
 
+    public MouseClickDetect detector;
+
     public void sendResetMove()
     {
         Move move = new Move(0, 255, -102, 1, "x:0,y:0,z:0,r:0");
@@ -57,12 +59,30 @@ public class resetAction : MonoBehaviour
             swcContent += line;
         }
 
-        // 这里可以写入SWC内容，示例写入空文件
         System.IO.File.WriteAllText(filePath, swcContent);
         Debug.Log($"SWC file saved to: {filePath}");
 
+        // 使用 detector 的坐标转换，也存储一份swc文件
+        // string fileNameConverted = $"tree_img{imageNumber}_{timestamp}_convert.swc";
+        // string filePathConverted = System.IO.Path.Combine(outputDir, fileNameConverted);
+        // string swcContentConverted = swcTitle + "\n";
+
+        // foreach (Node node in nodes)
+        // {
+        //     if (!swcRender.renderedNodeGameObjects.ContainsKey(node.id)) {
+        //         continue;
+        //     }
+            
+        //     GameObject nodeObj = swcRender.renderedNodeGameObjects[node.id];
+        //     Vector3 texturePos = detector.getNodeTexturePosition(nodeObj);
+        //     string line = $"{node.id} {node.type} {texturePos.x} {texturePos.y} {texturePos.z} {1.0} {node.pid}\n";
+        //     swcContentConverted += line;
+        // }
+
+        // System.IO.File.WriteAllText(filePathConverted, swcContentConverted);
+        // Debug.Log($"Converted SWC file saved to: {filePathConverted}");
 
         // 清空坐标集合
-        ConnectTwoDots.swcNodeTexturePos.Clear();
+        // ConnectTwoDots.swcNodeTexturePos.Clear();
     }
 }

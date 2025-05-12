@@ -2814,6 +2814,7 @@ MonoBehaviour:
   swcParent: {fileID: 1651780034}
   imageParent: {fileID: 2069660825}
   moveGenerator: {fileID: 1432822109}
+  swcRender: {fileID: 1651780038}
 --- !u!1 &926726271
 GameObject:
   m_ObjectHideFlags: 0
@@ -3560,6 +3561,7 @@ MonoBehaviour:
   moveGenerator: {fileID: 1432822109}
   imageSelectorDropDown: {fileID: 452006558}
   swcRender: {fileID: 1651780038}
+  detector: {fileID: 0}
 --- !u!1 &1372167076
 GameObject:
   m_ObjectHideFlags: 0
@@ -5982,6 +5984,7 @@ MonoBehaviour:
   moveGenerator: {fileID: 1432822109}
   imageSelectorDropDown: {fileID: 452006558}
   swcRender: {fileID: 1651780038}
+  detector: {fileID: 2069660826}
 --- !u!114 &2054292755
 MonoBehaviour:
   m_ObjectHideFlags: 0

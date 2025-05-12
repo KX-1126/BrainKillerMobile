@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using DataLoader;
 
 
 public class MouseClickDetect : MonoBehaviour
@@ -163,5 +163,23 @@ public class MouseClickDetect : MonoBehaviour
     public List<GameObject> getLastTwoClickedNodes()
     {
         return lastTwoClickedNodes;
+    }
+
+    public Vector3 getNodeTexturePosition(GameObject node)
+    {
+        if (node == null)
+        {
+            Debug.LogWarning("Node is null");
+            return Vector3.zero;
+        }
+
+        Vector3 worldPos = node.transform.position;
+        
+        // Convert to texture coordinates using coordinate mapping
+        Dataset3D dataset = targetColliderParent.getDataset();
+        List<Vector3> worldPosList = new List<Vector3> { worldPos };
+        List<Vector3> texturePosList = coordinateMapping.rayPoints2TexturePoints(worldPosList, dataset);
+        
+        return texturePosList.Count > 0 ? texturePosList[0] : Vector3.zero;
     }
 }

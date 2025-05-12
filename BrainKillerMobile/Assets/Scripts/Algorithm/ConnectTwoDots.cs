@@ -14,6 +14,7 @@ public class ConnectTwoDots : MonoBehaviour
     public GameObject swcParent;
     public testVolumeGeneration imageParent;
     public MoveGenerator moveGenerator;
+    public SWCRender swcRender;
 
     public static Dictionary<int, Vector3> swcNodeTexturePos = new Dictionary<int, Vector3>();
 
@@ -41,6 +42,19 @@ public class ConnectTwoDots : MonoBehaviour
             return null;
         } 
         
+        // string firstClieckedName = lastTwoClickedNodes[0].name;
+        // string[] firstClickedNameArray = firstClieckedName.Split('-');
+        // if (firstClickedNameArray.Length != 2) {
+        //     Debug.LogWarning("[fetch last two dots] firstClickedNameArray.Length != 2");
+        //     return null;
+        // }
+        // int firstClickedId = int.Parse(firstClickedNameArray[1]);
+        // bool isBranch = swcRender.curSwc.isNodeBranchNode(firstClickedId);
+        // if (isBranch) {
+        //     Debug.LogWarning("[fetch last two dots] The first clicked node should not be branch node");
+        //     return null;
+        // }
+
         if (lastTwoClickedNodes[1].tag == "SWCNode") {
             Debug.LogWarning("[fetch last two dots] The second clicked node should not be SWCNode");
             return null;

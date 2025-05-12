@@ -6,7 +6,7 @@ using System.IO;
 using BPCheck.SwcIO;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using DataLoader;
 public class SWCRender : MonoBehaviour
 {
     private float timer = 0f;
@@ -17,7 +17,7 @@ public class SWCRender : MonoBehaviour
     public String curSwcText = "";
     string swcFilePath;
     // use a set to record rended node
-    private Dictionary<int, GameObject> renderedNodeGameObjects = new Dictionary<int, GameObject>();
+    public Dictionary<int, GameObject> renderedNodeGameObjects = new Dictionary<int, GameObject>();
     private HashSet<string> renderedConnections = new HashSet<string>();
 
     private List<int> collaborators = new List<int>();
@@ -33,15 +33,16 @@ public class SWCRender : MonoBehaviour
         print("swcFileName: " + swcFileName);
         string exePath = System.AppDomain.CurrentDomain.BaseDirectory;
         print("exePath: " + exePath);
-        swcFilePath = Path.Combine(exePath, swcFileName);
-        // // print("swcFilePath: " + swcFilePath);
-        // swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+        // swcFilePath = Path.Combine(exePath, swcFileName);
+        // print("swcFilePath: " + swcFilePath);
+        swcFilePath = "F:\\Repos\\Tree_CRDT\\tree_255.swc";
+        // swcFilePath = "F:\\Repos\\Tree_CRDT\\mergeSWC\\carSWC\\Img10_X_3746.77_Y_5293.77_Z_3539.6.ano.swc"; // FOR DEBUG
 
         // addUserRowFunc.addRow(DataManager.Instance.userId.ToString() + "(You)", getColorForId(DataManager.Instance.userId));
     }
 
     private void Update() {
-        timer += Time.deltaTime;
+        timer += Time.deltaTime; 
         if (timer >= updateInterval) {
             timer = 0f;
             // Call the method to update the SWC
@@ -54,7 +55,7 @@ public class SWCRender : MonoBehaviour
         // This could involve re-reading the SWC file and re-rendering
         SwcFileReader swcFileReader = new SwcFileReader();
         string swcText = swcFileReader.readSwcFile(swcFilePath);
-        // string swcText = File.ReadAllText(swcFilePath);
+        // string swcText = File.ReadAllText(swcFilePath); // FOR DEBUG
 
         if (swcText == "") {
             print("SWC file read failed");
@@ -133,20 +134,27 @@ public class SWCRender : MonoBehaviour
             GameObject nodeGameObject = Instantiate(nodePrefab,transform);
             nodeGameObject.GetComponent<Renderer>().material.color = getColorForId(node.id);
             addCollaborator(node.id);
+            
+            // 使用 swc 的数据结构来判断节点类型
+            Debug.Log($"node {node.id} is a {node.type} node with {node.children.Count} children");
             if (node.pid == -1)
             {
                 nodeGameObject.name = "Head-" + node.id;
-            }else if (node.children.Count == 0)
+            }
+            else if (swc.branchNodes.Contains(node))
+            {
+                nodeGameObject.name = "Branch-" + node.id;
+                Debug.Log($"Setting node {node.id} as Branch node");
+            }
+            else if (swc.endNodes.Contains(node))
             {
                 nodeGameObject.name = "End-" + node.id;
             }
-            else if (node.children.Count > 1)
-            {
-                nodeGameObject.name = "Branch-" + node.id;
-            }else
+            else
             {
                 nodeGameObject.name = "Node-" + node.id;
             }
+            
             nodeGameObject.transform.localPosition = new Vector3(node.relativeX, node.relativeY, node.relativeZ);
             nodeGameObject.tag = "SWCNode";
             renderedNodeGameObjects.Add(node.id, nodeGameObject);
